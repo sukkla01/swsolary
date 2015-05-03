@@ -4,7 +4,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use kongoon\theme\material;
-//use app\assets\AppAsset;
+use app\assets\AppAsset;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -28,10 +28,11 @@ material\MaterialAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => 'MOPH Report',
+                'brandLabel' => '<span class="glyphicon glyphicon-phone"> ระบบเงินเดือนออนไลน์</span>',
+                //'brandLabel' => 'ระบบเงินเดือนออนไลน์',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
-                    'class' => 'navbar-default navbar-fixed-top',
+                    'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
             echo Nav::widget([
@@ -47,7 +48,7 @@ material\MaterialAsset::register($this);
                     ],
                     ['label' => 'เกี่ยวกับเรา', 'url' => ['/site/about']],
                     ['label' => 'ติดต่อ', 'url' => ['/site/contact']],
-                    ['label' => 'User', 'url' => ['/user']],
+                  
                     Yii::$app->user->isGuest ?
                         ['label' => 'เข้าสู่ระบบ', 'url' => ['/user/login']] :
                         ['label' => 'ออกจากระบบ (' . Yii::$app->user->displayName . ')',
@@ -75,7 +76,7 @@ foreach(Yii::$app->session->getAllFlashes() as $key=>$message){
 
     <footer class="footer">
         <div class="container">
-            <p class="pull-left">&copy; MOPH <?= date('Y') ?></p>
+            <p class="pull-left">&copy; โรงพยาบาลศรีสังวรสุโขทัย <?= date('Y') ?></p>
             <p class="pull-right"><?= Yii::powered() ?></p>
         </div>
     </footer>

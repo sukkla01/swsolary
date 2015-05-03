@@ -45,10 +45,10 @@ $config = [
         'authManager' => [
             'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\DbManager'
         ],
-        'urlManager'=>[
+        /*'urlManager'=>[
             'enablePrettyUrl'=>true,
             'showScriptName'=>false,
-        ]
+        ]*/
     ],
     'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
