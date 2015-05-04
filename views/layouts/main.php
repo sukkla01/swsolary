@@ -32,7 +32,7 @@ material\MaterialAsset::register($this);
                 //'brandLabel' => 'ระบบเงินเดือนออนไลน์',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
+                    'class' => 'navbar-info navbar-fixed-top',
                 ],
             ]);
             echo Nav::widget([

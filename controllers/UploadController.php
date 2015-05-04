@@ -20,6 +20,8 @@ class UploadController extends Controller{
                     LINES TERMINATED BY '\r\n' ";
                 
                 $data = $connection->createCommand($sql)->execute();
+                $tdate=date('Y-m-d H:i:s');
+                $data = $connection->createCommand("update p_solary_ver set d_update='$tdate' where d_update is null")->execute();
                 Yii::$app->session->setFlash('success', 'อัพโหลดไฟล์เรียบร้อยแล้ว');
             }else{
                 Yii::$app->session->setFlash('danger', 'ไม่สามารถอัพโหลดไฟล์ได้ หรือยังไม่ได้เลือกไฟล์ กรุณาติดต่อเจ้าหน้าที่ไอที');

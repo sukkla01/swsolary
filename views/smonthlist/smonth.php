@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
-echo Yii::$app->user->displayName;
+//echo Yii::$app->user->displayName;
 ?>
 <div class="col-md-12">
     <div class="panel panel-danger">
@@ -38,7 +38,6 @@ echo Yii::$app->user->displayName;
                             'value' => function($model)  {
                                 return Html::a(Html::encode($model['nmonth']), [
                                     'smonthlist/smonth_cid',
-                                    'cid' => $model['cid'],
                                     'year' => $model['fyear'],
                                     'mm' => $model['fmonth']
                                 ]);
