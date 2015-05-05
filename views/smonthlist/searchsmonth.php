@@ -11,7 +11,7 @@ use kartik\grid\GridView;
         echo GridView::widget([
             'dataProvider' => $dataProvider,
             'panel' => [
-                'heading' => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i>Log เก็บข้อมูลการเข้าใช้โปรแกรม</h3>",
+                'heading' => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i>รายชื่อการค้นหา</h3>",
                 'type' => 'danger',
                 //'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Country', ['create'], ['class' => 'btn btn-success']),
                 //'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> โหลดข้อมูลใหม่', ['/upload/upload'], ['class' => 'btn btn-info']),
@@ -37,6 +37,7 @@ use kartik\grid\GridView;
                     'value' => function($model) {
                                 return Html::a(Html::encode($model['tname']), [
                             '/smonthlist/smonth_cid',
+                            'ssn' => $model['cid'],
                             'year' => $model['fyear'],
                             'mm' => $model['fmonth']
                 ]);

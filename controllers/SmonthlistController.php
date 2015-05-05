@@ -102,7 +102,7 @@ $log_code=generateRandomString1();
 
 $connection = Yii::$app->db;
 
-$data = $connection->createCommand("INSERT IGNORE INTO p_log VALUES ('$log_code','smonthdetail','$user',$gyear,$gmonth,'$os','$ldate') ")->execute();
+$data = $connection->createCommand("INSERT IGNORE INTO p_log VALUES ('$log_code','smonthdetail','$user','$gyear','$gmonth','$os','$ldate') ")->execute();
 return $this->render('smonth_cid');
 }
 

@@ -5,12 +5,15 @@ namespace app\controllers;
 use yii;
 use yii\helpers\Html;
 use kartik\grid\GridView;
+
+$this->title = 'ค้นหาเจ้าหน้าที่';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="col-md-12">
     <div class="panel panel-material-green-300">
         <div class="panel-heading">
-            <h3 class="panel-title">ค้นหาข้อมูล</h3>
+            <h3 class="panel-title"> <i class='glyphicon glyphicon-search'></i> ค้นหาข้อมูล</h3>
         </div>
         <div class="panel-body">
             <?= Html::beginForm(); ?>
@@ -20,7 +23,7 @@ use kartik\grid\GridView;
             </div>   
             <div class="col-md-6">
                 ชื่อ-สกุล:
-                <input type="text"  name="name" class="form-control" placeholder="ชื่อ-สกุล">
+                <input type="text"  name="tname" class="form-control" placeholder="ชื่อ-สกุล">
             </div>  
             <?= Html::submitButton('ประมวลผล', ['class' => 'btn btn-material-pink-400']); ?>
 
@@ -38,7 +41,7 @@ use kartik\grid\GridView;
         echo GridView::widget([
             'dataProvider' => $dataProvider,
             'panel' => [
-                'heading' => "<h3 class='panel-title'><i class='glyphicon glyphicon-globe'></i>Log เก็บข้อมูลการเข้าใช้โปรแกรม</h3>",
+                'heading' => "<h3 class='panel-title'><i class='glyphicon glyphicon-signal'></i> รายชื่อการค้นหา</h3>",
                 'type' => 'danger',
                 //'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Country', ['create'], ['class' => 'btn btn-success']),
                 'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> โหลดข้อมูลใหม่', ['/upload/upload'], ['class' => 'btn btn-info']),
@@ -62,7 +65,7 @@ use kartik\grid\GridView;
                     'contentOptions' => ['class' => 'text-center'],
                     'format' => 'raw',
                     'value' => function($model) {
-                                return Html::a(Html::encode($model['ssn']), [
+                return Html::a(Html::encode($model['ssn']), [
                             '/smonthlist/searchsmonth',
                             'ssn' => $model['ssn'],
                 ]);
@@ -72,7 +75,13 @@ use kartik\grid\GridView;
                     'label' => 'ชื่อ-สกุล',
                     'attribute' => 'name',
                     'headerOptions' => ['class' => 'text-center'],
-                    'contentOptions' => ['class' => 'text-center'],
+                    
+                ],
+                [
+                    'label' => 'แผนก',
+                    'attribute' => 'DEPTNAME',
+                    'headerOptions' => ['class' => 'text-center'],
+                    
                 ],
             ]
         ]);
