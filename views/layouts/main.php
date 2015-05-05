@@ -47,7 +47,7 @@ material\MaterialAsset::register($this);
                         ]
                     ],
                     ['label' => 'เกี่ยวกับเรา', 'url' => ['/site/about']],
-                    ['label' => 'ติดต่อ', 'url' => ['/site/contact']],
+                    //['label' => 'ติดต่อ', 'url' => ['/site/contact']],
                   
                     Yii::$app->user->isGuest ?
                         ['label' => 'เข้าสู่ระบบ', 'url' => ['/user/login']] :

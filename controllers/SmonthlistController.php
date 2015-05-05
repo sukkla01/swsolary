@@ -106,4 +106,24 @@ $data = $connection->createCommand("INSERT IGNORE INTO p_log VALUES ('$log_code'
 return $this->render('smonth_cid');
 }
 
+public function actionSearchsmonth() {
+    $connection = Yii::$app->db;
+    $ssn=$_GET['ssn'];
+    $sql="SELECT CONCAT(nmonth,' ', fyear) AS tname,fmonth,cid,fyear
+            FROM p_solary_ver s
+            LEFT JOIN tbmonth t ON t.mm=s.fmonth
+            WHERE cid='$ssn'
+            GROUP BY nmonth
+            ORDER BY fyear,fmonth DESC";
+    $data = $connection->CreateCommand($sql)->queryAll();
+    $dataProvider = new ArrayDataProvider([
+            'allModels' => $data,
+     ]);
+
+    
+    return $this->render('searchsmonth',['dataProvider'=>$dataProvider]);
+    
+}
+
+
 }

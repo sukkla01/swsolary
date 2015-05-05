@@ -13,7 +13,7 @@ use kartik\grid\GridView;
             <h3 class="panel-title">ค้นหาข้อมูล</h3>
         </div>
         <div class="panel-body">
-<?= Html::beginForm(); ?>
+            <?= Html::beginForm(); ?>
             <div class="col-md-6">
                 รหัสบัตรประชาชน 13 หลัก:
                 <input type="text" name="cid" class="form-control" placeholder="XXXXXXXXXXXXX">
@@ -22,10 +22,10 @@ use kartik\grid\GridView;
                 ชื่อ-สกุล:
                 <input type="text"  name="name" class="form-control" placeholder="ชื่อ-สกุล">
             </div>  
-<?= Html::submitButton('ประมวลผล', ['class' => 'btn btn-material-pink-400']); ?>
+            <?= Html::submitButton('ประมวลผล', ['class' => 'btn btn-material-pink-400']); ?>
 
 
-<?= Html::endForm(); ?>
+            <?= Html::endForm(); ?>
         </div>
     </div>
 </div>
@@ -63,8 +63,8 @@ use kartik\grid\GridView;
                     'format' => 'raw',
                     'value' => function($model) {
                                 return Html::a(Html::encode($model['ssn']), [
-                                    'smonthlist/smonth',
-                                    'ssn' => $model['ssn'],
+                            '/smonthlist/searchsmonth',
+                            'ssn' => $model['ssn'],
                 ]);
             }// end value
                 ],
