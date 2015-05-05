@@ -64,7 +64,8 @@ $config = [
             'map/*',
             'debug/*',
             'upload/*',
-            'logshow/*'
+            'logshow/*',
+            'finsearch/*'
         ]
     ],
     'modules' => [

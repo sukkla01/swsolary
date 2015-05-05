@@ -43,6 +43,9 @@ class SmonthlistController extends \yii\web\Controller {
 
 
 $user = Yii::$app->user->displayName;
+if(isset($_GET['ssn'])){
+    $user=$_GET['ssn'];
+}
 $tdate = date('Y-m-d H:i:s');
 $log_code = generateRandomString();
 
@@ -69,15 +72,15 @@ return $this->render('smonth', ['dataProvider' => $dataProvider]);
 
 public function actionSmonth_cid() {
 
-function generateRandomString($length = 20) {
-$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-$charactersLength = strlen($characters);
-$randomString = '';
-for ($i = 0; $i < $length; $i++) {
-$randomString .= $characters[rand(0, $charactersLength - 1)];
-}
-return $randomString;
-}
+function generateRandomString1($length = 20) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
+        }
 
 $agent = $_SERVER['HTTP_USER_AGENT'];
 
@@ -95,7 +98,7 @@ $user = Yii::$app->user->displayName;
 $gyear = $_GET['year'];
 $gmonth = $_GET['mm'];
 //$log_code = 'log' . rand(0, 100000000) . 'sw';
-$log_code=generateRandomString();
+$log_code=generateRandomString1();
 
 $connection = Yii::$app->db;
 

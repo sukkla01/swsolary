@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 
 
-$this->title = 'รายงาน 10 อันดับขายดีประจำเดือน';
+$this->title = 'Log Data';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -52,10 +52,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'label' => 'ปี',
                     'attribute' => 'lyear'
-                ],
-                [
-                    'label' => 'รายการ',
-                    'attribute' => 'name'
                 ],
                 [
                     'label' => 'OS',

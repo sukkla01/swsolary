@@ -4,6 +4,9 @@ $this->params['breadcrumbs'][] = ['label' => 'รายเดือน', 'url' =
 $this->params['breadcrumbs'][] = $this->title;
 
 $user = Yii::$app->user->displayName;
+if(isset($_GET['ssn'])){
+    $user=$_GET['ssn'];
+}
 $gyear = $_GET['year'];
 $gmonth = $_GET['mm'];
 
