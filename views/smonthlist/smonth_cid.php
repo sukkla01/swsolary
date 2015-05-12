@@ -171,24 +171,7 @@ for ($nu = 0; $nu < sizeof($datac); $nu++) {
                                     </div>
 
                                     <?php
-                                    /* if ($data[$i]['money11'] >= 1) {
-                                      echo number_format(substr($data[$i]['money11'], 0, -2)) . '.' . substr($data[$i]['money11'], -2) . '<hr>';
-                                      }
-                                      if ($data[$i]['money12'] >= 1) {
-                                      echo number_format(substr($data[$i]['money12'], 0, -2)) . '.' . substr($data[$i]['money12'], -2) . '<hr>';
-                                      }
-                                      if ($data[$i]['money13'] >= 1) {
-                                      echo number_format(substr($data[$i]['money13'], 0, -2)) . '.' . substr($data[$i]['money13'], -2) . '<hr>';
-                                      }
-                                      if ($data[$i]['money14'] >= 1) {
-                                      echo number_format(substr($data[$i]['money14'], 0, -2)) . '.' . substr($data[$i]['money14'], -2) . '<hr>';
-                                      }
-                                      if ($data[$i]['money17'] >= 1) {
-                                      echo number_format(substr($data[$i]['money17'], 0, -2)) . '.' . substr($data[$i]['money17'], -2) . '<hr>';
-                                      }
-                                      if ($data[$i]['money20'] >= 1) {
-                                      echo number_format(substr($data[$i]['money20'], 0, -2)) . '.' . substr($data[$i]['money20'], -2) . '<hr>';
-                                      } */
+                                    
                                     ?>
 
                                 </td>
