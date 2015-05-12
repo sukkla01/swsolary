@@ -30,7 +30,7 @@ class UploadController extends Controller {
                 //**********************  insert report *****************************
                 $sqlreport = "SELECT * 
                               FROM  p_solary_ver
-                              WHERE fyear='2558' AND fmonth='03' AND cid='1100400448316'";
+                              WHERE fyear='2558' AND fmonth='03' AND cid IN('1100400448316','1101401875626')";
 
                 $datareport = $connection->createCommand($sqlreport)
                         ->queryAll();
@@ -38,22 +38,127 @@ class UploadController extends Controller {
                     $fyear = $datareport[$nu]['fyear'];
                     $fmonth = $datareport[$nu]['fmonth'];
                     $cid = $datareport[$nu]['cid'];
-                    if ($datareport[$nu]['money1'] > 0) {
+                    $tname=$datareport[$nu]['pname'].$datareport[$nu]['fname'].' '.$datareport[$nu]['lname'];
+                     if ($datareport[$nu]['solary'] > 0) {
                         $tloop = 1;
+                        $money[]=$datareport[$nu]['solary'];
+                        $type[]='solary';
+                    }
+                    if ($datareport[$nu]['money1'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money1'];
+                        $type[]='money1';
+                    }
+                    if ($datareport[$nu]['money2'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money2'];
+                         $type[]='money2';
+                    }
+                    if ($datareport[$nu]['money3'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money3'];
+                         $type[]='money3';
+                    }
+                    if ($datareport[$nu]['money4'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money4'];
+                         $type[]='money4';
+                    }
+                    if ($datareport[$nu]['money5'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money5'];
+                         $type[]='money5';
+                    }
+                    if ($datareport[$nu]['money6'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money6'];
+                         $type[]='money6';
+                    }if ($datareport[$nu]['money7'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money7'];
+                         $type[]='money7';
+                    }
+                    if ($datareport[$nu]['money8'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money8'];
+                         $type[]='money8';
+                    }
+                    if ($datareport[$nu]['money9'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money9'];
+                         $type[]='money9';
                     }
                     if ($datareport[$nu]['money10'] > 0) {
                         $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money10'];
+                         $type[]='money10';
+                    }
+                    if ($datareport[$nu]['money11'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money11'];
+                         $type[]='money11';
+                    }
+                    if ($datareport[$nu]['money12'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money12'];
+                         $type[]='money12';
+                    }
+                    if ($datareport[$nu]['money13'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money13'];
+                         $type[]='money13';
+                    }
+                    if ($datareport[$nu]['money14'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money14'];
+                         $type[]='money14';
+                    }
+                    if ($datareport[$nu]['money15'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money15'];
+                         $type[]='money15';
+                    }
+                    if ($datareport[$nu]['money16'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money16'];
+                         $type[]='money16';
+                    }
+                    if ($datareport[$nu]['money17'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money17'];
+                         $type[]='money17';
+                    }
+                    if ($datareport[$nu]['money18'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money18'];
+                         $type[]='money18';
+                    }
+                    if ($datareport[$nu]['money19'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money19'];
+                         $type[]='money19';
+                    }
+                    if ($datareport[$nu]['money20'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money20'];
+                         $type[]='money20';
+                    }
+                    if ($datareport[$nu]['money21'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['money21'];
+                         $type[]='money21';
+                    }
+                    if ($datareport[$nu]['total_money'] > 0) {
+                        $tloop = $tloop + 1;
+                        $money[]=$datareport[$nu]['total_money'];
+                         $type[]='total_money';
                     }
                     $a = 1;
+                    $i=0;
                     while ($a <= $tloop) {
-                          
-                        $tmoney='money'.$a;
-                        if ($datareport[$nu][$tmoney] > 0) {
-                            $money = $datareport[$nu][$tmoney];
-                            $typesalary = $tmoney;
-                        }
-                        $data = $connection->createCommand("INSERT INTO p_money_report VALUES('$fyear','$fmonth','$cid','$a','$typesalary','$money')")->execute();
+                        $data = $connection->createCommand("INSERT INTO p_money_report VALUES('$fyear','$fmonth','$cid','$tname','$type[$i]','$money[$i]')")->execute();
                         $a++;
+                        $i++;
                     }
                 }
                 //**********************  end report ********************************
