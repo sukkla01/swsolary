@@ -6,15 +6,13 @@ use yii\helpers\Html;
     print_r($money);
 }*/
 
- $this->title =  'นำเข้าข้อมูล Ver';
+ $this->title =  'นำเข้าข้อมูลเงินโรงพยาบาล';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-
-
 <div class="col-md-12">
-    <div class="panel panel-material-grey-600">
+    <div class="panel panel-material-lime-600">
         <div class="panel-heading">
-            <h3 class="panel-title">นำเข้าข้อมูลแบบ Vertical</h3>
+            <h3 class="panel-title">นำเข้าข้อมูลเงินโรงพยาบาล</h3>
         </div>
         <div class="panel-body">
             <?php

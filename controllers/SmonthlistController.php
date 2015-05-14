@@ -124,6 +124,11 @@ public function actionSearchsmonth() {
     return $this->render('searchsmonth',['dataProvider'=>$dataProvider]);
     
 }
+public function actionSmonth_cid1() {
+    
+    return $this->render('smonth_cid1');
+    
+}
 
 
 }
