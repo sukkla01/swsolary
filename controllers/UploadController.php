@@ -131,7 +131,7 @@ class UploadController extends Controller {
 
     public function actionUploadsw() {
         $model = new UploadForm;
-        
+        $date1=date('Y-m-d');
         if (Yii::$app->request->isPost) {
             $connection = Yii::$app->db;
             $model->file = UploadedFile::getInstance($model, 'file');
@@ -139,19 +139,118 @@ class UploadController extends Controller {
                 $model->file->saveAs(
                         'uploads/' . $model->file->baseName . '.' . $model->file->extension);
                 $path = $model->file->baseName . '.' . $model->file->extension;
-                $sql = "LOAD DATA LOCAL INFILE 'uploads/$path' REPLACE INTO TABLE p_salary_sw
+                $sql = "LOAD DATA LOCAL INFILE 'uploads/$path' REPLACE  INTO TABLE p_salary_sw
                     FIELDS TERMINATED BY ',' 
                     ENCLOSED BY '\"' 
                     LINES TERMINATED BY '\r\n' 
                     IGNORE 1 LINES  ";
                 $data = $connection->createCommand($sql)->execute();
                 
-              Yii::$app->session->setFlash('material-green-400', 'อัพโหลดไฟล์เรียบร้อยแล้ว');
+                $date1 = $_POST['date1'];
+                $data = $connection->createCommand("update p_salary_sw set salarydate='$date1' where salarydate is null")->execute();
+                
+                //**********************  insert report *****************************
+                $sqlreport = "SELECT * 
+                              FROM  p_salary_sw
+                              WHERE salarydate='$date1' ";
+
+                $datareport = $connection->createCommand($sqlreport)
+                        ->queryAll();
+
+                for ($nu = 0; $nu < sizeof($datareport); $nu++) {
+                    
+                    $salarydate = $datareport[$nu]['salarydate'];
+                    $no = $datareport[$nu]['no'];
+                    $id = $datareport[$nu]['id'];
+                    $receive = $datareport[$nu]['receive'];
+                    $paid = $datareport[$nu]['paid'];
+                    $carry = $datareport[$nu]['carry'];
+                    $salary = $datareport[$nu]['salary'];
+                    $tax = $datareport[$nu]['tax'];
+                    $assur_dd = $datareport[$nu]['assur_dd'];
+                    $soc = $datareport[$nu]['soc'];
+                    $type7 = $datareport[$nu]['type7'];
+                    $type9 = $datareport[$nu]['type9'];
+                    $type10 = $datareport[$nu]['type10'];
+                    $type11 = $datareport[$nu]['type11'];
+                    $type12 = $datareport[$nu]['type12'];
+                    $type14 = $datareport[$nu]['type14'];
+                    $type17 = $datareport[$nu]['type17'];
+                    $type18 = $datareport[$nu]['type18'];
+                    $type21 = $datareport[$nu]['type21'];
+                    $type22 = $datareport[$nu]['type22'];
+                    $type23 = $datareport[$nu]['type23'];
+                    $type24 = $datareport[$nu]['type24'];
+                    $type57 = $datareport[$nu]['type57'];
+                    $type58 = $datareport[$nu]['type58'];
+                    $type60 = $datareport[$nu]['type60'];
+                    $type61 = $datareport[$nu]['type61'];
+                    $type62 = $datareport[$nu]['type62'];
+                    $type64 = $datareport[$nu]['type64'];
+                    $type67 = $datareport[$nu]['type67'];
+                    $type68 = $datareport[$nu]['type68'];
+                    $type74 = $datareport[$nu]['type74'];
+                    
+                    
+                    
+                    
+                    $treceive = 'receive';
+                    $tpaid = 'paid';
+                    $tcarry = 'carry';
+                    $tsalary = 'salary';
+                    $ttax = 'tax';
+                    $tassur_dd ='assur_dd';
+                    $tsoc = 'soc';
+                    $ttype7 = 'type7';
+                    $ttype9 = 'type9';
+                    $ttype10 = 'type10';
+                    $ttype11 = 'type11';
+                    $ttype12 = 'type12';
+                    $ttype14 = 'type14';
+                    $ttype17 = 'type17';
+                    $ttype18 = 'type18';
+                    $ttype21 = 'type21';
+                    $ttype22 = 'type22';
+                    $ttype23 = 'type23';
+                    $ttype24 = 'type24';
+                    $ttype57 = 'type57';
+                    $ttype58 = 'type58';
+                    $ttype60 = 'type60';
+                    $ttype61 = 'type61';
+                    $ttype62 = 'type62';
+                    $ttype64 = 'type64';
+                    $ttype67 = 'type67';
+                    $ttype68 = 'type68';
+                    $ttype74 = 'type74';
+                    
+                    
+                    
+                    $money = array($receive,$paid,$carry,$salary,$tax,$assur_dd,$soc,$type7,$type9,
+                                    $type10,$type11,$type12,$type14,$type17,$type18,$type21,$type22,$type23,
+                                    $type24,$type57,$type58,$type60,$type61,$type62,$type64,$type67,$type68,$type74);
+                     $type = array($treceive,$tpaid,$tcarry,$tsalary,$ttax,$tassur_dd,$tsoc,$ttype7,$ttype9,
+                                    $ttype10,$ttype11,$ttype12,$ttype14,$ttype17,$ttype18,$ttype21,$ttype22,$ttype23,
+                                    $ttype24,$ttype57,$ttype58,$ttype60,$ttype61,$ttype62,$ttype64,$ttype67,$ttype68,$ttype74);   
+                     
+                    $a = 1;
+                    $i = 0;
+                    while ($a <= 28) {
+                        $data = $connection->createCommand("INSERT IGNORE INTO p_money_report_sw VALUES('$no','$id','$type[$i]','$money[$i]','$salarydate')")->execute();
+                        $a++;
+                        $i++;
+                    }
+                    
+                }
+                $data = $connection->createCommand("DELETE FROM p_money_report_sw WHERE money=0 ")->execute();
+                
+                
+                
+                Yii::$app->session->setFlash('material-green-400', 'อัพโหลดไฟล์เรียบร้อยแล้ว');
             } else {
                 Yii::$app->session->setFlash('danger', 'ไม่สามารถอัพโหลดไฟล์ได้ หรือยังไม่ได้เลือกไฟล์ กรุณาติดต่อเจ้าหน้าที่ไอที');
             }
         }
-        return $this->render('uploadsw',['model'=>$model]);
+        return $this->render('uploadsw',['model'=>$model,'date1'=>$date1]);
     }
 
 }
