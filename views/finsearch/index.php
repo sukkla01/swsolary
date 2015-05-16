@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'heading' => "<h3 class='panel-title'><i class='glyphicon glyphicon-signal'></i> รายชื่อการค้นหา</h3>",
                 'type' => 'danger',
                 //'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Country', ['create'], ['class' => 'btn btn-success']),
-                'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> โหลดข้อมูลใหม่', ['/upload/upload'], ['class' => 'btn btn-info']),
+                //'after' => Html::a('<i class="glyphicon glyphicon-repeat"></i> โหลดข้อมูลใหม่', ['/upload/upload'], ['class' => 'btn btn-info']),
                 'footer' => false
             ],
             'responsive' => true,
@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => function($model) {
                 return Html::a(Html::encode($model['ssn']), [
                             '/smonthlist/searchsmonth',
-                            'ssn' => $model['ssn'],
+                            'ssn' => md5($model['ssn']),
                 ]);
             }// end value
                 ],

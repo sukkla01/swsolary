@@ -11,12 +11,13 @@ $tbank = '';
 $tbank_account = '';
 $tcid = '';
 
-$user = Yii::$app->user->displayName;
+$user = md5(Yii::$app->user->displayName);
 if (isset($_GET['ssn'])) {
     $user = $_GET['ssn'];
+    $gyear = $_GET['year'];
+    $gmonth = $_GET['mm'];
 }
-$gyear = $_GET['year'];
-$gmonth = $_GET['mm'];
+
 
 //***********************  เก็บ log *********************
 
@@ -26,36 +27,46 @@ $gmonth = $_GET['mm'];
 
 $connection = Yii::$app->db;
 //********************** detail รับ*********************
-$eyear=$gyear-543;
+$eyear = intval($gyear) - 543;
+echo ($gyear-543).' df'.$gyear;
+
 $sql = "SELECT fyear,fmonth,cid,typesalary,r.money,t.id,t.name,'Yes' AS tcheck,code
 FROM p_money_report r
 LEFT JOIN p_typemoney t ON t.code=r.typesalary
-WHERE fyear='$gyear' AND fmonth='$gmonth' AND cid='$user' and status='1' and  typesalary <>'money10'
+WHERE fyear='$gyear' AND fmonth='$gmonth' AND md5(cid)='$user' and status='1' and  typesalary <>'money10'
 UNION ALL
-SELECT YEAR(rs.salarydate),MONTH(rs.salarydate),cid,typesalary,concat(rs.money,'00') as money,ts.id,ts.name,code,
-IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck
+SELECT YEAR(rs.salarydate),MONTH(rs.salarydate),cid,typesalary,concat(rs.money,'00') as money,ts.id,ts.name,
+IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck,code
 FROM p_money_report_sw rs
 LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
-WHERE YEAR(rs.salarydate)='$eyear'  AND MONTH(rs.salarydate)='$gmonth' AND rs.cid='$user'
+WHERE YEAR(rs.salarydate)='$gyear'-543  AND MONTH(rs.salarydate)='$gmonth' AND md5(rs.cid)='$user'
 	AND status='1'
 HAVING tcheck='Yes'
 ORDER BY id";
 $data = $connection->createCommand($sql)
         ->queryAll();
 //********************** detail จ่าย*********************
-$sqls = "SELECT fyear,fmonth,cid,typesalary,t.name,r.money,tname,code 
+$sqls = "SELECT fyear,fmonth,cid,typesalary,r.money,t.id,t.name,'Yes' AS tcheck,code
 FROM p_money_report r
 LEFT JOIN p_typemoney t ON t.code=r.typesalary
-WHERE fyear='$gyear' AND fmonth='$gmonth' AND cid='$user' and status='2'
-ORDER BY t.id ";
+WHERE fyear='$gyear' AND fmonth='$gmonth' AND md5(cid)='$user' and status='2' and  typesalary <>'money21'
+UNION ALL
+SELECT YEAR(rs.salarydate),MONTH(rs.salarydate),cid,typesalary,concat(rs.money,'00') as money,ts.id,ts.name,code,
+IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck
+FROM p_money_report_sw rs
+LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
+WHERE YEAR(rs.salarydate)='$gyear'-543  AND MONTH(rs.salarydate)='$gmonth' AND md5(rs.cid)='$user'
+	AND status='2'
+HAVING tcheck='Yes'
+ORDER BY id";
 $datas = $connection->createCommand($sqls)
         ->queryAll();
 //********************** detail จ่าย*********************
 $sqlk = "SELECT money
 FROM p_money_report r
-WHERE fyear='$gyear' AND fmonth='$gmonth' AND cid='$user'  AND typesalary='total_money'";
+WHERE fyear='$gyear' AND fmonth='$gmonth' AND md5(cid)='$user'  AND typesalary='total_money'";
 $command = Yii::$app->db->createCommand($sqlk);
- $total=$command->queryScalar();
+$total = $command->queryScalar();
 //********************* header *******************************
 $sqlc = "SELECT s.fyear,t.nmonth,CONCAT(pname,fname,' ',lname) AS tname,s.cid,
 	d.deptname as tdept,CONCAT(bank,' ',code_bank) AS tbank,bank_account
@@ -63,7 +74,7 @@ FROM p_solary_ver s
 LEFT JOIN userinfo uf ON uf.ssn=s.cid
 LEFT JOIN dep d ON d.deptid=uf.DEFAULTDEPTID
 LEFT JOIN tbmonth t ON t.mm=s.fmonth
-WHERE cid='$user' AND fyear='$gyear' AND fmonth='$gmonth' ";
+WHERE md5(cid)='$user' AND fyear='$gyear' AND fmonth='$gmonth' ";
 $datac = $connection->createCommand($sqlc)
         ->queryAll();
 for ($nu = 0; $nu < sizeof($datac); $nu++) {
@@ -116,33 +127,35 @@ for ($nu = 0; $nu < sizeof($datac); $nu++) {
                             <td align="right">จำนวนเงิน/บาท</td> 
 
                         </tr>
-                        <?php $ab = 1; $tsum=0;?>
-                        <?php for ($i = 0; $i < sizeof($data); $i++) { ?>
-                            
-                                <tr>
-                                    <td><?php echo $ab . '. ' . $data[$i]['name']; ?> </td>
-                                    <td align="right">
-                                        <?php 
-                                        $tfront=substr($data[$i]['money'], 0, -2);
-                                        $tback=substr($data[$i]['money'], -2);
-                                        $tmoney=$tfront.'.'.$tback;
-                                        $trr=number_format($tmoney, 2, '.', '');               
-                                        echo (doubleval($trr));
-                                        ?> 
-                                    </td> 
-                                   
-                                </tr>
-                                
-                           
-                            <?php 
-                                $ab++;  
-                                $tsum=$tsum+$tmoney;
-                        } ?>
+                        <?php $ab = 1;
+                        $tsum = 0;
+                        ?>
+<?php for ($i = 0; $i < sizeof($data); $i++) { ?>
 
-                                <tr class="danger">
-                                    <td>รวมรายรับ </td>
-                                    <td align="right"><?=$tsum;?> </td> 
-                                </tr>
+                            <tr>
+                                <td><?php echo $ab . '. ' . $data[$i]['name']; ?> </td>
+                                <td align="right">
+                                    <?php
+                                    $tfront = substr($data[$i]['money'], 0, -2);
+                                    $tback = substr($data[$i]['money'], -2);
+                                    $tmoney = $tfront . '.' . $tback;
+                                    echo number_format($tmoney, 2);
+                                    ?> 
+                                </td> 
+
+                            </tr>
+
+
+                            <?php
+                            $ab++;
+                            $tsum = $tsum + $tmoney;
+                        }
+                        ?>
+
+                        <tr class="danger">
+                            <td>รวมรายรับ </td>
+                            <td align="right"><?= number_format($tsum, 2); ?> </td> 
+                        </tr>
 
 
 
@@ -170,23 +183,31 @@ for ($nu = 0; $nu < sizeof($datac); $nu++) {
                             <td align="right">จำนวนเงิน/บาท</td> 
 
                         </tr>
-                       <?php $ab = 1; ?>
+                        <?php $ab = 1;  $tsum2 = 0; ?>
                         <?php for ($i = 0; $i < sizeof($datas); $i++) { ?>
-                            <?php if ($datas[$i]['code'] <> 'money21') { ?>
-                                <tr>
-                                    <td><?php echo $ab . '. ' . $datas[$i]['name']; ?> </td>
-                                    <td align="right"><?php echo  number_format(substr($datas[$i]['money'], 0, -2)) . '.' . substr($datas[$i]['money'], -2); ?> </td> 
-                                </tr>
-                            <?php } else { ?>
-                                <tr class="danger">
-                                    <td><?php echo $datas[$i]['name']; ?> </td>
-                                    <td align="right"><?php echo  number_format(substr($datas[$i]['money'], 0, -2)) . '.' . substr($datas[$i]['money'], -2); ?> </td> 
-                                </tr>
-                            <?php } ?>
-                            <?php $ab++;
-                        } ?>
+                            <tr>
+                                <td><?php echo $ab . '. ' . $datas[$i]['name']; ?> </td>
+                                <td align="right">
+                                    <?php
+                                    $tfront = substr($datas[$i]['money'], 0, -2);
+                                    $tback = substr($datas[$i]['money'], -2);
+                                    $tmoney2 = $tfront . '.' . $tback;
+                                    echo number_format($tmoney2, 2);
+                                    ?> 
+                                </td> 
 
+                            </tr>
 
+                            <?php
+                            $ab++;
+                            $tsum2 = $tsum2 + $tmoney2;
+                        }
+                        ?>
+
+                        <tr class="danger">
+                            <td>รวมรายการหัก </td>
+                            <td align="right"><?= number_format($tsum2, 2); ?> </td> 
+                        </tr>
 
 
 
@@ -214,8 +235,8 @@ for ($nu = 0; $nu < sizeof($datac); $nu++) {
             </div>
             <div class="col-md-6" align="center">
                 <div class="alert alert-dismissable alert-danger">
-                    <h4><?php echo  number_format(substr($total, 0, -2)) . '.' . substr($total, -2).' บาท'; ?> </h4>
-                    
+                    <h4><?php echo number_format($tsum-$tsum2,2).' บาท'; ?> </h4>
+
                 </div>
             </div> 
         </div>

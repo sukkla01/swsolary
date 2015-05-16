@@ -112,7 +112,7 @@ public function actionSearchsmonth() {
     $sql="SELECT CONCAT(nmonth,' ', fyear) AS tname,fmonth,cid,fyear
             FROM p_solary_ver s
             LEFT JOIN tbmonth t ON t.mm=s.fmonth
-            WHERE cid='$ssn'
+            WHERE md5(cid)='$ssn'
             GROUP BY nmonth
             ORDER BY fyear,fmonth DESC";
     $data = $connection->CreateCommand($sql)->queryAll();

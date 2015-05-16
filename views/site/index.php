@@ -20,4 +20,4 @@ use yii\helpers\Html;
     
 </div>
 <?php
-//echo Yii::$app->security->generatePasswordHash('manop');
+ echo Yii::$app->security->generatePasswordHash('1234');

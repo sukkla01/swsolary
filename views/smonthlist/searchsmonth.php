@@ -37,7 +37,7 @@ use kartik\grid\GridView;
                     'value' => function($model) {
                                 return Html::a(Html::encode($model['tname']), [
                             '/smonthlist/smonth_cid',
-                            'ssn' => $model['cid'],
+                            'ssn' => md5($model['cid']),
                             'year' => $model['fyear'],
                             'mm' => $model['fmonth']
                 ]);
