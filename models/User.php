@@ -13,7 +13,9 @@ class User extends ActiveRecord implements IdentityInterface{
     const ROLE_USER = 1;
     const ROLE_MANAGER = 5;
     const ROLE_ADMIN = 10;
-    
+   
+
+
     public static function tableName(){
         return 'user';
     }
@@ -54,6 +56,7 @@ class User extends ActiveRecord implements IdentityInterface{
     public function getId() {
         return $this->getPrimaryKey();
     }
+  
 
     public function validateAuthKey($authKey) {
         

@@ -6,7 +6,8 @@ class TestController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-        return $this->render('index');
+        $sql = "select email from user where username='neo' ";
+        $mail=\Yii::$app->db->createCommand($sql)->queryScalar();
+        print_r($mail);
     }
-
 }

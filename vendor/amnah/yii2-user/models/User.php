@@ -37,6 +37,8 @@ use ReflectionClass;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    public $email = "test";
+
     /**
      * @var int Inactive status
      */
@@ -456,6 +458,8 @@ class User extends ActiveRecord implements IdentityInterface
 
         return $default;
     }
+    
+  
 
     /**
      * Send email confirmation to user
