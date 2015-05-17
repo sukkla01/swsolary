@@ -112,6 +112,8 @@ class UploadController extends Controller {
                     }
                 }
                 $data = $connection->createCommand("DELETE FROM p_money_report WHERE money=0 ")->execute();
+                $data = $connection->createCommand("UPDATE  p_solary_ver SET fyear=YEAR(d_update)+543 WHERE fyear=0 ")->execute();
+                $data = $connection->createCommand("UPDATE  p_money_report SET fyear=YEAR(curdate())+543 WHERE fyear=0 ")->execute();
                 //**********************  end report ********************************
 
                 Yii::$app->session->setFlash('material-green-400', 'อัพโหลดไฟล์เรียบร้อยแล้ว');
