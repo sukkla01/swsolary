@@ -39,11 +39,16 @@ material\MaterialAsset::register($this);
                 'options' => ['class' => 'navbar-nav navbar-right'],
                 'items' => [
                     ['label' => 'หน้าหลัก', 'url' => ['/site/index']],
-                    ['label' => 'รายงาน',
+                    ['label' => 'เมนู',
                         'items'=>[
-                            ['label'=>'รายงาน1','url'=>['/report/report/report1']],
-                            ['label'=>'รายงาน2','url'=>['/report/report/report2']],
-                            ['label'=>'รายงาน3','url'=>['/report/report/report3']],
+                            ['label'=>'ดูเงินเดือน','url'=>['/smonthlist/smonth']],
+                            ['label'=>'ค้นหาเจ้าหน้าที่','url'=>['/finsearch']],
+                            ['label'=>'####################'],
+                            ['label'=>'นำเข้าข้อมูลกรมบัญชีกลาง','url'=>['/upload/upload']],
+                            ['label'=>'นำเข้าข้อมูลจากโรงพยาบาล','url'=>['/upload/uploadsw']],
+                            ['label'=>'####################'],
+                             ['label'=>'ตั่งค่าทั่วไป','url'=>['/setting']],
+                          
                         ]
                     ],
                     ['label' => 'เกี่ยวกับเรา', 'url' => ['/site/about']],
@@ -74,13 +79,21 @@ foreach(Yii::$app->session->getAllFlashes() as $key=>$message){
         </div>
     </div>
 
-    <footer class="footer">
+    <!--<footer class="footer container">
         <div class="container">
             <p class="pull-left">&copy; โรงพยาบาลศรีสังวรสุโขทัย <?= date('Y') ?></p>
             <p class="pull-right"><?= Yii::powered() ?></p>
         </div>
-    </footer>
+    </footer>-->
 
+    <div class="navbar-fixed-bottom">
+        <div class="container">
+           <p class="pull-left">&copy; โรงพยาบาลศรีสังวรสุโขทัย <?= date('Y') ?></p>
+          
+            <p class="pull-right"><?= Yii::powered() ?></p>
+        </div>
+    </div>
+    
 <?php $this->endBody() ?>
 </body>
 </html>

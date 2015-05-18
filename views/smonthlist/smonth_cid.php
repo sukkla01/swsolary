@@ -11,15 +11,15 @@ $tbank = '';
 $tbank_account = '';
 $tcid = '';
 
-echo Yii::$app->user->displayCid;
-echo Yii::$app->user->displayName;
-$user = md5(Yii::$app->user->displayName);
+//echo md5(Yii::$app->user->displayCid);
+//echo Yii::$app->user->displayName;
+$user =  md5(Yii::$app->user->displayCid);
 if (isset($_GET['ssn'])) {
     $user = $_GET['ssn'];
-    $gyear = $_GET['year'];
-    $gmonth = $_GET['mm'];
+    
 }
-
+$gyear = $_GET['year'];
+$gmonth = $_GET['mm'];
 
 //***********************  เก็บ log *********************
 

@@ -3,16 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Contact;
-use app\models\ContactSearch;
+use app\models\PtypemoneySw;
+use app\models\PtypemoneyswSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\models\User;
+
 /**
- * ContactController implements the CRUD actions for Contact model.
+ * PtypemoneyswController implements the CRUD actions for PtypemoneySw model.
  */
-class ContactController extends Controller
+class PtypemoneyswController extends Controller
 {
     public function behaviors()
     {
@@ -23,43 +23,17 @@ class ContactController extends Controller
                     'delete' => ['post'],
                 ],
             ],
-            /*'access'=>[
-                'class'=>  \yii\filters\AccessControl::className(),
-                'ruleConfig'=>[
-                    'class'=>  \app\components\AccessRule::className(),
-                ],
-                'only'=>['create','update','delete'],
-                'rules'=>[
-                    [
-                        'actions'=>['create','update'],
-                        'allow'=>true,
-                        'roles'=>[
-                            User::ROLE_MANAGER,
-                            User::ROLE_ADMIN,
-                        ]
-                    ],
-                    [
-                        'actions'=>['delete'],
-                        'allow'=>true,
-                        'roles'=>[
-                            User::ROLE_ADMIN,
-                        ]
-                    ]
-                ]
-            ],*/
-            
         ];
     }
 
     /**
-     * Lists all Contact models.
+     * Lists all PtypemoneySw models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ContactSearch();
+        $searchModel = new PtypemoneyswSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->pagination->pageSize = 2;
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -68,8 +42,8 @@ class ContactController extends Controller
     }
 
     /**
-     * Displays a single Contact model.
-     * @param integer $id
+     * Displays a single PtypemoneySw model.
+     * @param string $id
      * @return mixed
      */
     public function actionView($id)
@@ -80,16 +54,16 @@ class ContactController extends Controller
     }
 
     /**
-     * Creates a new Contact model.
+     * Creates a new PtypemoneySw model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Contact();
+        $model = new PtypemoneySw();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->code]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -98,9 +72,9 @@ class ContactController extends Controller
     }
 
     /**
-     * Updates an existing Contact model.
+     * Updates an existing PtypemoneySw model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * @param string $id
      * @return mixed
      */
     public function actionUpdate($id)
@@ -108,7 +82,7 @@ class ContactController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->code]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -117,9 +91,9 @@ class ContactController extends Controller
     }
 
     /**
-     * Deletes an existing Contact model.
+     * Deletes an existing PtypemoneySw model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param string $id
      * @return mixed
      */
     public function actionDelete($id)
@@ -130,15 +104,15 @@ class ContactController extends Controller
     }
 
     /**
-     * Finds the Contact model based on its primary key value.
+     * Finds the PtypemoneySw model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Contact the loaded model
+     * @param string $id
+     * @return PtypemoneySw the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Contact::findOne($id)) !== null) {
+        if (($model = PtypemoneySw::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

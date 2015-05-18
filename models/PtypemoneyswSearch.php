@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Contact;
+use app\models\PtypemoneySw;
 
 /**
- * ContactSearch represents the model behind the search form about `app\models\Contact`.
+ * PtypemoneyswSearch represents the model behind the search form about `app\models\PtypemoneySw`.
  */
-class ContactSearch extends Contact
+class PtypemoneyswSearch extends PtypemoneySw
 {
     /**
      * @inheritdoc
@@ -18,8 +18,7 @@ class ContactSearch extends Contact
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['firstname', 'lastname', 'address', 'tambon_id', 'email'], 'safe'],
+            [['id', 'code', 'name', 'detail', 'status'], 'safe'],
         ];
     }
 
@@ -41,8 +40,8 @@ class ContactSearch extends Contact
      */
     public function search($params)
     {
-        $query = Contact::find();
-        
+        $query = PtypemoneySw::find();
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -54,16 +53,12 @@ class ContactSearch extends Contact
             // $query->where('0=1');
             return $dataProvider;
         }
-        $query->joinWith('tambon');
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
 
-        $query->andFilterWhere(['like', 'firstname', $this->firstname])
-            ->andFilterWhere(['like', 'lastname', $this->lastname])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'base_tambon.tambon_name', $this->tambon_id]);
+        $query->andFilterWhere(['like', 'id', $this->id])
+            ->andFilterWhere(['like', 'code', $this->code])
+            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'detail', $this->detail])
+            ->andFilterWhere(['like', 'status', $this->status]);
 
         return $dataProvider;
     }

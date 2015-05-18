@@ -42,7 +42,7 @@ class SmonthlistController extends \yii\web\Controller {
       
 
 
-$user = Yii::$app->user->displayName;
+$user =Yii::$app->user->displayCid;;
 if(isset($_GET['ssn'])){
     $user=$_GET['ssn'];
 }
