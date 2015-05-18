@@ -51,7 +51,7 @@ material\MaterialAsset::register($this);
                   
                     Yii::$app->user->isGuest ?
                         ['label' => 'เข้าสู่ระบบ', 'url' => ['/user/login']] :
-                        ['label' => 'ออกจากระบบ (' . Yii::$app->user->displayEmail. ')',
+                        ['label' => 'ออกจากระบบ (' . Yii::$app->user->displayName. ')',
                             'url' => ['/user/logout'],
                             'linkOptions' => ['data-method' => 'post']],
                 ],

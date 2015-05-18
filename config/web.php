@@ -66,7 +66,8 @@ $config = [
             'upload/*',
             'logshow/*',
             'finsearch/*',
-            'setting/*'
+            'setting/*',
+            'test/*'
         ]
     ],
     'modules' => [

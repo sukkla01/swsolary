@@ -61,8 +61,8 @@ class User extends \yii\web\User
         $user = $this->getIdentity();
         $username=$user->getDisplayName();
        $sql = "select cid from user where username='$username' ";
-       $mail=\Yii::$app->db->createCommand($sql)->queryScalar();
-       return $mail;
+       $cid=\Yii::$app->db->createCommand($sql)->queryScalar();
+       return $cid;
     }
 
     /**
