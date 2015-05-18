@@ -57,7 +57,7 @@ class User extends \yii\web\User
         return $user ? $user->getDisplayName($default) : "";
     }
     
-    public function getDisplayEmail(){
+    public function getDisplayCid(){
         $user = $this->getIdentity();
         $username=$user->getDisplayName();
        $sql = "select cid from user where username='$username' ";

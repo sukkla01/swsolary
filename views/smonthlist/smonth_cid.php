@@ -11,6 +11,8 @@ $tbank = '';
 $tbank_account = '';
 $tcid = '';
 
+echo Yii::$app->user->displayCid;
+echo Yii::$app->user->displayName;
 $user = md5(Yii::$app->user->displayName);
 if (isset($_GET['ssn'])) {
     $user = $_GET['ssn'];
@@ -27,8 +29,7 @@ if (isset($_GET['ssn'])) {
 
 $connection = Yii::$app->db;
 //********************** detail รับ*********************
-$eyear = intval($gyear) - 543;
-echo ($gyear-543).' df'.$gyear;
+$eyear = $gyear - 543;
 
 $sql = "SELECT fyear,fmonth,cid,typesalary,r.money,t.id,t.name,'Yes' AS tcheck,code
 FROM p_money_report r
@@ -39,7 +40,7 @@ SELECT YEAR(rs.salarydate),MONTH(rs.salarydate),cid,typesalary,concat(rs.money,'
 IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck,code
 FROM p_money_report_sw rs
 LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
-WHERE YEAR(rs.salarydate)='$gyear'-543  AND MONTH(rs.salarydate)='$gmonth' AND md5(rs.cid)='$user'
+WHERE YEAR(rs.salarydate)='$eyear' AND MONTH(rs.salarydate)='$gmonth' AND md5(rs.cid)='$user'
 	AND status='1'
 HAVING tcheck='Yes'
 ORDER BY id";
@@ -55,7 +56,7 @@ SELECT YEAR(rs.salarydate),MONTH(rs.salarydate),cid,typesalary,concat(rs.money,'
 IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck
 FROM p_money_report_sw rs
 LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
-WHERE YEAR(rs.salarydate)='$gyear'-543  AND MONTH(rs.salarydate)='$gmonth' AND md5(rs.cid)='$user'
+WHERE YEAR(rs.salarydate)='$eyear'  AND MONTH(rs.salarydate)='$gmonth' AND md5(rs.cid)='$user'
 	AND status='2'
 HAVING tcheck='Yes'
 ORDER BY id";
