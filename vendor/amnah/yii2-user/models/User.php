@@ -37,8 +37,6 @@ use ReflectionClass;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    public $email = "test";
-
     /**
      * @var int Inactive status
      */
@@ -141,7 +139,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function attributeLabels()
     {
-        /*return [
+        return [
             'id'          => Yii::t('user', 'ID'),
             'role_id'     => Yii::t('user', 'Role ID'),
             'status'      => Yii::t('user', 'Status'),
@@ -159,11 +157,11 @@ class User extends ActiveRecord implements IdentityInterface
             'ban_time'    => Yii::t('user', 'Ban Time'),
             'ban_reason'  => Yii::t('user', 'Ban Reason'),
 
+            // virtual attributes set above
             'currentPassword' => Yii::t('user', 'Current Password'),
             'newPassword'     => Yii::t('user', 'New Password'),
             'newPasswordConfirm' => Yii::t('user', 'New Password Confirm'),
-
-        ];*/
+        ];
     }
 
     /**
@@ -458,8 +456,6 @@ class User extends ActiveRecord implements IdentityInterface
 
         return $default;
     }
-    
-  
 
     /**
      * Send email confirmation to user

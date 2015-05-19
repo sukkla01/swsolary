@@ -3,6 +3,15 @@
 $vendorDir = dirname(__DIR__);
 
 return array (
+  'kongoon/yii2-theme-material' => 
+  array (
+    'name' => 'kongoon/yii2-theme-material',
+    'version' => '9999999-dev',
+    'alias' => 
+    array (
+      '@kongoon/theme/material' => $vendorDir . '/kongoon/yii2-theme-material',
+    ),
+  ),
   'yiisoft/yii2-swiftmailer' => 
   array (
     'name' => 'yiisoft/yii2-swiftmailer',
@@ -91,15 +100,6 @@ return array (
     'alias' => 
     array (
       '@mdm/admin' => $vendorDir . '/mdmsoft/yii2-admin',
-    ),
-  ),
-  'kongoon/yii2-theme-material' => 
-  array (
-    'name' => 'kongoon/yii2-theme-material',
-    'version' => '9999999-dev',
-    'alias' => 
-    array (
-      '@kongoon/theme/material' => $vendorDir . '/kongoon/yii2-theme-material',
     ),
   ),
   'miloschuman/yii2-highcharts-widget' => 

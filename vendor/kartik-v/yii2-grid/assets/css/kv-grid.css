@@ -1,8 +1,8 @@
 /*!
  * @package   yii2-grid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   3.0.0
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @version   3.0.2
  *
  * Gridview widget styling and enhancements for Bootstrap.
  * Built for Yii Framework 2.0
@@ -268,4 +268,18 @@
 
 .kv-clear-radio {
     float:none;
+}
+
+@media screen and (max-width: 480px) {
+    .kv-table-wrap th, .kv-table-wrap td {
+		display: block;
+        width: 100%!important;
+        text-align: center;
+        font-size: 1.2em;
+	}
+    .kv-table-wrap tr > td:first-child {
+        border-top: 3px double #ccc;
+        margin-top: 10px;
+        font-size: 2em;
+    }
 }

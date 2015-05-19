@@ -1,8 +1,8 @@
 /*!
  * @package   yii2-grid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   3.0.0
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @version   3.0.2
  *
  * Grid Export Validation Module for Yii's Gridview. Supports export of
  * grid data as CSV, HTML, or Excel.
@@ -228,6 +228,10 @@
             // Skip the filter rows and header rowspans
             $table.find('tr.filters').remove();
             $table.find('th').removeAttr('rowspan');
+            // remove link tags
+            $table.find('th').find('a').each(function() {
+                $(this).contents().unwrap();
+            });
             $table.find('input').remove(); // remove any form inputs
             if (!self.showHeader) {
                 $table.find('thead').remove();

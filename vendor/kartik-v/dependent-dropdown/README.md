@@ -1,6 +1,12 @@
 dependent-dropdown
 ==================
 
+[![BOWER version](https://badge-me.herokuapp.com/api/bower/kartik-v/dependent-dropdown.png)](http://badges.enytc.com/for/bower/kartik-v/dependent-dropdown)
+[![Latest Stable Version](https://poser.pugx.org/kartik-v/dependent-dropdown/v/stable)](https://packagist.org/packages/kartik-v/dependent-dropdown)
+[![License](https://poser.pugx.org/kartik-v/dependent-dropdown/license)](https://packagist.org/packages/kartik-v/dependent-dropdown)
+[![Packagist Downloads](https://poser.pugx.org/kartik-v/dependent-dropdown/downloads)](https://packagist.org/packages/kartik-v/dependent-dropdown)
+[![Monthly Downloads](https://poser.pugx.org/kartik-v/dependent-dropdown/d/monthly)](https://packagist.org/packages/kartik-v/dependent-dropdown)
+
 A multi level dependent dropdown JQuery plugin that allows nested dependencies. The plugin allows you to convert normal
 select inputs, whose options are derived based on value selected in another input/or a group of inputs. It works both
 with normal select options and select with optgroups as well.
@@ -222,6 +228,12 @@ set this to `false`, it will not be displayed. Defaults to `Select ...`.
 ##### emptyMsg
 _string_ the message to display when the ajax response returned from the server is null or an empty array. Defaults to
 `No data found`.
+
+##### idParam
+_string_ the name of the parameter that returns the `id` value for each list option item via json response. Defaults to `id`.
+
+##### nameParam
+_string_ the name of the parameter that returns the `name` value for each list option item via json response. Defaults to `name`.
 
 ### Plugin Events
 The plugin supports these events:

@@ -3,8 +3,8 @@
 /**
  * @package   yii2-grid
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2015
- * @version   3.0.0
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * @version   3.0.2
  */
 
 namespace kartik\grid;
@@ -18,7 +18,7 @@ use yii\web\JsExpression;
 use yii\web\View;
 
 /**
- * A ExpandRowColumn can be used to expand a row and add content in a new
+ * An ExpandRowColumn can be used to expand a row and add content in a new
  * row below it either directly or via ajax.
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
@@ -45,6 +45,23 @@ class ExpandRowColumn extends DataColumn
     public $value = GridView::ROW_NONE;
 
     /**
+     * @var boolean whether to toggle the expansion/collapse by clicking on the table row. To disable row 
+     * click for specific elements within the row you can add the CSS class `kv-disable-click` to tags/elements  
+     * to disable the toggle functionality.
+     */
+    public $enableRowClick = false;
+
+    /**
+     * @var array list of tags in the row on which row click will be disabled.
+     */
+    public $rowClickExcludedTags = ['a', 'button', 'input'];    
+
+    /**
+     * @var array additional data that will be passed to the ajax load function as key value pairs
+     */
+    public $extraData = [];
+    
+    /**
      * @var string icon for the expand indicator. If this is not set, it will derive values automatically
      * using the following rules:
      * - If GridView `bootstrap` property is set to `true`, it will default to [[GridView::ICON_EXPAND]]
@@ -58,7 +75,7 @@ class ExpandRowColumn extends DataColumn
      * using the following rules:
      * - If GridView `bootstrap` property is set to `true`, it will default to [[GridView::ICON_COLLAPSE]]
      *   or `<span class="glyphicon glyphicon-collapse-down"></span>`
-     * - If GridView `bootstrap` property is set to `false`, then it will default to `+`.
+     * - If GridView `bootstrap` property is set to `false`, then it will default to `-`.
      */
     public $collapseIcon;
 
@@ -88,6 +105,12 @@ class ExpandRowColumn extends DataColumn
      * - GridView::ROW_EXPANDED : Will set all rows to expanded and display the `collapseIcon`
      */
     public $defaultHeaderState = GridView::ROW_COLLAPSED;
+    
+    /**
+     * @var boolean whether to allow only one row to be expanded at a time and auto collapse other 
+     * expanded rows whenever a row is expanded. Defaults to `false`.
+     */
+    public $expandOneOnly = false;
 
     /**
      * @var boolean allow batch expansion or batch collapse of all rows by clicking
@@ -209,9 +232,6 @@ class ExpandRowColumn extends DataColumn
         if (empty($this->detail) && empty($this->detailUrl)) {
             throw new InvalidConfigException("Either the 'detail' or 'detailUrl' must be entered");
         }
-        if ($this->hiddenFromExport) {
-            Html::addCssClass($this->detailOptions, 'skip-export');
-        }
         $this->format = 'raw';
         $this->expandIcon = $this->getIcon('expand');
         $this->collapseIcon = $this->getIcon('collapse');
@@ -223,11 +243,15 @@ class ExpandRowColumn extends DataColumn
         if (!empty($onDetailLoaded) && !$onDetailLoaded instanceof JsExpression) {
             $onDetailLoaded = new JsExpression($onDetailLoaded);
         }
-        $this->headerOptions['title'] = $this->expandAllTitle;
-        if ($this->defaultHeaderState === GridView::ROW_EXPANDED) {
+        if ($this->allowBatchToggle) {
+            $this->headerOptions['title'] = $this->expandAllTitle;
+        }
+        if ($this->allowBatchToggle && $this->defaultHeaderState === GridView::ROW_EXPANDED) {
             $this->headerOptions['title'] = $this->collapseTitle;
         }
-        Html::addCssClass($this->headerOptions, 'kv-expand-header-cell');
+        $class = 'kv-expand-header-cell';
+        $class .= $this->allowBatchToggle ? ' kv-batch-toggle' : ' text-muted';
+        Html::addCssClass($this->headerOptions, $class);
         $view = $this->grid->getView();
         ExpandRowColumnAsset::register($view);
         $clientOptions = Json::encode(
@@ -244,9 +268,12 @@ class ExpandRowColumn extends DataColumn
                 'collapseAllTitle' => $this->collapseAllTitle,
                 'rowCssClass' => $this->detailRowCssClass,
                 'animationDuration' => $this->detailAnimationDuration,
-                'batchToggle' => $this->allowBatchToggle,
+                'expandOneOnly' => $this->expandOneOnly,
+                'enableRowClick' => $this->enableRowClick,
+                'rowClickExcludedTags' => array_map('strtoupper',$this->rowClickExcludedTags),
                 'collapseAll' => false,
                 'expandAll' => false,
+                'extraData' => $this->extraData
             ]
         );
         $this->_hashVar = 'kvExpandRow_' . hash('crc32', $clientOptions);
@@ -308,13 +335,16 @@ class ExpandRowColumn extends DataColumn
         $detail = static::parseData($this->detail, $model, $key, $index, $this);
         $detailOptions = static::parseData($this->detailOptions, $model, $key, $index, $this);
         $disabled = static::parseData($this->disabled, $model, $key, $index, $this) ? ' kv-state-disabled' : '';
+        if ($this->hiddenFromExport) {
+            Html::addCssClass($detailOptions, 'skip-export');
+        }        
         $detailOptions['data-index'] = $index;
         $detailOptions['data-key'] = $key;
         Html::addCssClass($detailOptions, 'kv-expanded-row');
         $content = Html::tag('div', $detail, $detailOptions);
         return <<< HTML
         <div class="kv-expand-row{$disabled}">
-            <div class="kv-expand-icon kv-state-{$type}{$disabled}" tabindex="-1">{$icon}</div>
+            <div class="kv-expand-icon kv-state-{$type}{$disabled}">{$icon}</div>
             <div class="kv-expand-detail skip-export" style='display:none;'>
                 {$content}
             </div>
@@ -352,10 +382,8 @@ HTML;
         if ($this->value === GridView::ROW_EXPANDED) {
             $options['title'] = $this->collapseTitle;
         }
-        if ($this->disabled) {
+        if (static::parseData($this->disabled, $model, $key, $index, $this)) {
             $css .= ' kv-state-disabled';
-        } elseif (!isset($options['title'])) {
-            $options['title'] = $title;
         }
         Html::addCssClass($options, $css);
         $this->initPjax("kvExpandRow({$this->_hashVar});");
@@ -381,7 +409,6 @@ HTML;
             $icon = $this->collapseIcon;
             $css = 'kv-expand-header-icon kv-state-expanded';
         }
-        return "<div class='{$css}' tabindex='-1'>{$icon}</div>";
-
+        return "<div class='{$css}'>{$icon}</div>";
     }
 }

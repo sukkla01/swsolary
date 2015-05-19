@@ -566,7 +566,7 @@ class File extends \Faker\Provider\Base
      *
      * @param  string  $sourceDirectory The directory to look for random file taking
      * @param  string  $targetDirectory
-     * @param  boolean $fullPath        Wether to have the full path or just the filename
+     * @param  boolean $fullPath        Whether to have the full path or just the filename
      * @return string
      */
     public static function file($sourceDirectory = '/tmp', $targetDirectory = '/tmp', $fullPath = true)
@@ -584,7 +584,9 @@ class File extends \Faker\Provider\Base
         }
 
         // Drop . and .. and reset array keys
-        $files = array_values(array_diff(scandir($sourceDirectory), array('.', '..')));
+        $files = array_filter(array_values(array_diff(scandir($sourceDirectory), array('.', '..'))), function ($file) use ($sourceDirectory) {
+                return !is_dir($sourceDirectory . DIRECTORY_SEPARATOR . $file);
+        });
 
         $sourceFullPath = $sourceDirectory . DIRECTORY_SEPARATOR . static::randomElement($files);
 

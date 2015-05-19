@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 /**
  * @var yii\web\View $this
  * @var yii\widgets\ActiveForm $form
- * @var app\models\LoginForm $model
+ * @var amnah\yii2\user\models\forms\LoginForm $model
  */
 
 $this->title = Yii::t('user', 'Login');
@@ -14,9 +14,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-default-login">
 
-	
+	<h1><?= Html::encode($this->title) ?></h1>
 
-	<p><?= Yii::t("user", "กรุณาเข้าระบบ:") ?></p>
+	<p><?= Yii::t("user", "Please fill out the following fields to login:") ?></p>
 
 	<?php $form = ActiveForm::begin([
 		'id' => 'login-form',
@@ -39,20 +39,25 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?= Html::submitButton(Yii::t('user', 'Login'), ['class' => 'btn btn-primary']) ?>
 
             <br/><br/>
-            
+            <?= Html::a(Yii::t("user", "Register"), ["/user/register"]) ?> /
+            <?= Html::a(Yii::t("user", "Forgot password") . "?", ["/user/forgot"]) ?> /
+            <?= Html::a(Yii::t("user", "Resend confirmation email"), ["/user/resend"]) ?>
 		</div>
 	</div>
 
 	<?php ActiveForm::end(); ?>
 
-   
-	
+    <?php if (Yii::$app->get("authClientCollection", false)): ?>
+        <div class="col-lg-offset-2">
+            <?= yii\authclient\widgets\AuthChoice::widget([
+                'baseAuthUrl' => ['/user/auth/login']
+            ]) ?>
+        </div>
+    <?php endif; ?>
 
-</div>
+	<div class="col-lg-offset-2" style="color:#999;">
+		You may login with <strong>neo/neo</strong>.<br>
+		To modify the username/password, log in first and then <?= HTML::a("update your account", ["/user/account"]) ?>.
+	</div>
 
-<div class="col-lg-offset-1" style="color:#dc143c;">
-    <h4><span class="label label-danger">วัตถุประสงค์</span></h4>
-   
-    1.เพื่อแจ้งรายละเอียดการโอนเงินดือน ค่าจ้าง ค่าตอบแทนเข้าบัญชีของข้าราชการ ลูกจ้างประจำ และพนักงานราชการของสำนักงานปลัดกระทรวงสาธารณสุข (ส่วนกลาง) <br>
-    2.เพื่อลดการใช้กระดาษ ทดแทนการแจกกระดาษสลิปเงินเดือน
 </div>
