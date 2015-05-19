@@ -56,14 +56,6 @@ class User extends \yii\web\User
         $user = $this->getIdentity();
         return $user ? $user->getDisplayName($default) : "";
     }
-    
-    public function getDisplayCid(){
-        $user = $this->getIdentity();
-        $username=$user->getDisplayName();
-       $sql = "select cid from user where username='$username' ";
-       $cid=\Yii::$app->db->createCommand($sql)->queryScalar();
-       return $cid;
-    }
 
     /**
      * Check if user can do $permissionName.
