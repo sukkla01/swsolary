@@ -18,7 +18,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @var string Module version
      */
-    protected $_version = "3.0.0-RC";
+    protected $_version = "2.1.2";
 
     /**
      * @var string Alias for module
@@ -92,12 +92,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public $emailViewPath = "@user/mail";
 
     /**
-     * @var bool If true, the module will add url rules in the bootstrap phase. Disable this 
-     *           if don't want users to visit the /user pages (eg, if you're building an api)
-     */
-    public $addUrlRules = true;
-
-    /**
      * @var array Model classes, e.g., ["User" => "amnah\yii2\user\models\User"]
      * Usage:
      *   $user = Yii::$app->getModule("user")->model("User", $config);
@@ -121,26 +115,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function getVersion()
     {
         return $this->_version;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function bootstrap($app)
-    {
-        // add rules for admin/copy/auth controllers
-        if ($this->addUrlRules) {
-
-            $groupUrlRule = new GroupUrlRule([
-                'prefix' => $this->id,
-                'rules' => [
-                    '<controller:(admin|copy|auth)>' => '<controller>',
-                    '<controller:(admin|copy|auth)>/<action:\w+>' => '<controller>/<action>',
-                    '<action>' => 'default/<action>',
-                ],
-            ]);
-            $app->getUrlManager()->addRules($groupUrlRule->rules, false);
-        }
     }
 
     /**
@@ -250,6 +224,56 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $className = $this->modelClasses[ucfirst($name)];
         $this->_models[$name] = Yii::createObject(array_merge(["class" => $className], $config));
         return $this->_models[$name];
+    }
+
+    /**
+     * @inheritdoc
+     * NOTE: THIS IS NOT CURRENTLY USED.
+     *       This is here for future versions and will need to be bootstrapped via config file
+     *
+     */
+    public function bootstrap($app)
+    {
+        // add rules for admin/copy/auth controllers
+        $groupUrlRule = new GroupUrlRule([
+            'prefix' => $this->id,
+            'rules' => [
+                '<controller:(admin|copy|auth)>' => '<controller>',
+                '<controller:(admin|copy|auth)>/<action:\w+>' => '<controller>/<action>',
+                '<action:\w+>' => 'default/<action>',
+            ],
+        ]);
+        $app->getUrlManager()->addRules($groupUrlRule->rules, false);
+    }
+
+    /**
+     * Modify createController() to handle routes in the default controller
+     *
+     * This is a temporary hack until they add in url management via modules
+     *
+     * @link https://github.com/yiisoft/yii2/issues/810
+     * @link http://www.yiiframework.com/forum/index.php/topic/21884-module-and-url-management/
+     *
+     * "user", "user/default", "user/admin", and "user/copy" work like normal
+     * any other "user/xxx" gets changed to "user/default/xxx"
+     *
+     * @inheritdoc
+     */
+    public function createController($route)
+    {
+        // check valid routes
+        $validRoutes  = [$this->defaultRoute, "admin", "copy", "auth"];
+        $isValidRoute = false;
+        foreach ($validRoutes as $validRoute) {
+            if (strpos($route, $validRoute) === 0) {
+                $isValidRoute = true;
+                break;
+            }
+        }
+
+        return (empty($route) or $isValidRoute)
+            ? parent::createController($route)
+            : parent::createController("{$this->defaultRoute}/{$route}");
     }
 
     /**
