@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<StiSerializer type="Flex" version="1.02" application="StiReport">
+  <Dictionary type="Dictionary" Ref="1" isKey="true">
+    <Databases count="1" isList="true">
+      <Connection1 type="Stimulsoft.Report.Dictionary.StiMySqlDatabase" Ref="2" isKey="true">
+        <Alias>Connection1</Alias>
+        <ConnectionStringEncrypted>w9b1Cc1ao6TDGoiYxAh3XotUf8JlBaOIa1+hjesNJXqLyPXrTVRzjMBKuZnoAKVq0Xh1g0gJUYBH
+BpyF6gV1L8J42ytLXNO8bFvQhM8=</ConnectionStringEncrypted>
+        <Name>Connection1</Name>
+      </Connection1>
+    </Databases>
+    <DataSources count="5" isList="true">
+      <DataSource1 type="Stimulsoft.Report.Dictionary.StiMySqlSource" Ref="3" isKey="true">
+        <Alias>DataSource1</Alias>
+        <Columns count="9" isList="true">
+          <value>fyear,System.String</value>
+          <value>fmonth,System.String</value>
+          <value>cid,System.String</value>
+          <value>typesalary,System.String</value>
+          <value>money,System.String</value>
+          <value>id,System.String</value>
+          <value>name,System.String</value>
+          <value>tcheck,System.String</value>
+          <value>code,System.String</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>DataSource1</Name>
+        <NameInSource>Connection1</NameInSource>
+        <Parameters count="0" isList="true"/>
+        <SqlCommand>SELECT fyear,fmonth,cid,typesalary,CONCAT(SUBSTR(r.money,1,LENGTH(r.money)-2),'.',SUBSTR(r.money,-2,2)) AS money,t.id,t.name,'Yes' AS tcheck,code
+FROM p_money_report r
+LEFT JOIN p_typemoney t ON t.code=r.typesalary
+WHERE fyear='{gyear}' AND fmonth='{gmonth}' AND status='1' and  typesalary &lt;&gt;'money10'
+UNION ALL
+SELECT YEAR(rs.salarydate),MONTH(rs.salarydate),cid,typesalary,concat(rs.money,'.00') as money,ts.id,ts.name,
+IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck,code
+FROM p_money_report_sw rs
+LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
+WHERE YEAR(rs.salarydate)='{gyear}'-543 AND MONTH(rs.salarydate)='{gmonth}' 
+	AND status='1'
+HAVING tcheck='Yes'
+ORDER BY id</SqlCommand>
+      </DataSource1>
+      <DataSource2 type="Stimulsoft.Report.Dictionary.StiMySqlSource" Ref="4" isKey="true">
+        <Alias>DataSource2</Alias>
+        <Columns count="9" isList="true">
+          <value>fyear,System.String</value>
+          <value>fmonth,System.String</value>
+          <value>cid,System.String</value>
+          <value>typesalary,System.String</value>
+          <value>tmoney,System.String</value>
+          <value>id,System.String</value>
+          <value>tname,System.String</value>
+          <value>tcheck,System.String</value>
+          <value>code,System.String</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>DataSource2</Name>
+        <NameInSource>Connection1</NameInSource>
+        <Parameters count="0" isList="true"/>
+        <SqlCommand>SELECT fyear,fmonth,cid,typesalary,CONCAT(SUBSTR(r.money,1,LENGTH(r.money)-2),'.',SUBSTR(r.money,-2,2)) AS tmoney,t.id,t.name AS tname,'Yes' AS tcheck,code
+FROM p_money_report r
+LEFT JOIN p_typemoney t ON t.code=r.typesalary
+WHERE fyear='{gyear}' AND fmonth='{gmonth}'  and status='2' and  typesalary &lt;&gt;'money21'
+UNION ALL
+SELECT YEAR(rs.salarydate),MONTH(rs.salarydate),cid,typesalary,concat(rs.money,'.00') as money,ts.id,ts.name,
+IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck,code
+FROM p_money_report_sw rs
+LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
+WHERE YEAR(rs.salarydate)='{gyear}'-543 AND MONTH(rs.salarydate)='{gmonth}' 
+	AND status='2'
+HAVING tcheck='Yes'
+ORDER BY id</SqlCommand>
+      </DataSource2>
+      <DataSource3 type="Stimulsoft.Report.Dictionary.StiMySqlSource" Ref="5" isKey="true">
+        <Alias>DataSource3</Alias>
+        <Columns count="2" isList="true">
+          <value>summoney,System.Decimal</value>
+          <value>cid,System.String</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>DataSource3</Name>
+        <NameInSource>Connection1</NameInSource>
+        <Parameters count="0" isList="true"/>
+        <SqlCommand>SELECT SUM(IF(status=1,tt.money,tt.money*-1)) AS summoney,cid
+FROM (SELECT fyear,fmonth,cid,typesalary,CONCAT(SUBSTR(r.money,1,LENGTH(r.money)-2),'.',SUBSTR(r.money,-2,2)) AS money,
+t.id,t.name,'Yes' AS tcheck,code,status
+FROM p_money_report r
+LEFT JOIN p_typemoney t ON t.code=r.typesalary
+WHERE  fyear='{gyear}' AND fmonth='{gmonth}' AND status IN('1','2') and  typesalary NOT IN('money10','money21')
+UNION ALL
+SELECT YEAR(rs.salarydate),MONTH(rs.salarydate),cid,typesalary,concat(rs.money,'.00') as money,ts.id,ts.name,
+IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck,code,ts.status
+FROM p_money_report_sw rs
+LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
+WHERE YEAR(rs.salarydate)='{gyear}'-543 AND MONTH(rs.salarydate)='{gmonth}' 
+	AND ts.status IN('1','2')
+HAVING tcheck='Yes') AS tt
+group by cid</SqlCommand>
+      </DataSource3>
+      <DataSource4 type="Stimulsoft.Report.Dictionary.StiMySqlSource" Ref="6" isKey="true">
+        <Alias>DataSource4</Alias>
+        <Columns count="1" isList="true">
+          <value>MONTH_NAME,System.String</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>DataSource4</Name>
+        <NameInSource>Connection1</NameInSource>
+        <Parameters count="0" isList="true"/>
+        <SqlCommand>SELECT
+ if({gmonth}='01','ธันวาคม',
+if({gmonth}='02','มกราคม',
+if({gmonth}='03','กุมภาพันธ์',
+if({gmonth}='04','มีนาคม',
+if({gmonth}='05','เมษายน',
+if({gmonth}='06','พฤษภาคม',
+if({gmonth}='07','มิถุนายน',
+if({gmonth}='08','กรกฎาคม',
+if({gmonth}='09','สิงหาคม',
+if({gmonth}='10','กันยายน',
+if({gmonth}='11','ตุลาคม','พฤศจิกายน')))))))))))  as  MONTH_NAME</SqlCommand>
+      </DataSource4>
+      <DataSource5 type="Stimulsoft.Report.Dictionary.StiMySqlSource" Ref="7" isKey="true">
+        <Alias>DataSource5</Alias>
+        <Columns count="6" isList="true">
+          <value>hname,System.String</value>
+          <value>DEPTNAME,System.String</value>
+          <value>cid,System.String</value>
+          <value>tcheck,System.String</value>
+          <value>code,System.String</value>
+          <value>status,System.String</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1"/>
+        <Name>DataSource5</Name>
+        <NameInSource>Connection1</NameInSource>
+        <Parameters count="0" isList="true"/>
+        <SqlCommand>SELECT *
+FROM (SELECT u.name AS hname,d.DEPTNAME,r.cid,
+'Yes' AS tcheck,code,status
+FROM p_money_report r
+LEFT JOIN p_typemoney t ON t.code=r.typesalary
+LEFT JOIN userinfo u ON u.SSN=r.cid
+LEFT JOIN dep d ON d.DEPTID=u.DEFAULTDEPTID
+WHERE  fyear='2558' AND fmonth='01' AND status IN('1','2') AND status IN('1','2') and  typesalary NOT IN('money10','money21')
+UNION ALL
+SELECT u.name AS hname,d.DEPTNAME,rs.cid,
+IF(rs.no LIKE '1%' AND typesalary IN('carry','receive','paid'),'No','Yes') AS tcheck,code,ts.status
+FROM p_money_report_sw rs
+LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
+LEFT JOIN userinfo u ON u.SSN=rs.cid
+LEFT JOIN dep d ON d.DEPTID=u.DEFAULTDEPTID
+WHERE YEAR(rs.salarydate)='2558'-543 AND MONTH(rs.salarydate)='01' 
+	AND ts.status IN('1','2')
+HAVING tcheck='Yes') AS tt
+group by cid</SqlCommand>
+      </DataSource5>
+    </DataSources>
+    <Relations count="0" isList="true"/>
+    <Report isRef="0"/>
+    <Variables count="3" isList="true">
+      <value>,gyear,gyear,,System.String,_x0032_558,False,False,True</value>
+      <value>,gmonth,gmonth,,System.String,_x0030_1,False,False,True</value>
+      <value>,user,user,,System.String,,False,False,True</value>
+    </Variables>
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings count="0" isList="true"/>
+  <MetaTags count="0" isList="true"/>
+  <Pages count="1" isList="true">
+    <Page1 type="Page" Ref="8" isKey="true">
+      <Border>None;Black;2;Solid;False;4;Black</Border>
+      <Brush>Transparent</Brush>
+      <Components count="5" isList="true">
+        <PageFooterBand1 type="PageFooterBand" Ref="9" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,12.01,20.61,2.4</ClientRectangle>
+          <Components count="1" isList="true">
+            <Text23 type="Text" Ref="10" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>11,0.79,9.2,0.6</ClientRectangle>
+              <Conditions count="0" isList="true"/>
+              <Font>Angsana New,16</Font>
+              <Guid>8229e1fa44e371738e49728ab3e38708</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text23</Name>
+              <Page isRef="8"/>
+              <Parent isRef="9"/>
+              <Text>ลงชื่อ.......................................................เจ้าหน้าที่การเงิน</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text23>
+          </Components>
+          <Conditions count="0" isList="true"/>
+          <Name>PageFooterBand1</Name>
+          <Page isRef="8"/>
+          <Parent isRef="8"/>
+        </PageFooterBand1>
+        <Panel4 type="Panel" Ref="11" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0.2,0,20.2,3.4</ClientRectangle>
+          <Components count="2" isList="true">
+            <GroupHeaderBand4 type="GroupHeaderBand" Ref="12" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0.4,20.2,0</ClientRectangle>
+              <Components count="0" isList="true"/>
+              <Condition>{DataSource5.ssn}</Condition>
+              <Conditions count="0" isList="true"/>
+              <Name>GroupHeaderBand4</Name>
+              <NewPageBefore>True</NewPageBefore>
+              <Page isRef="8"/>
+              <Parent isRef="11"/>
+            </GroupHeaderBand4>
+            <DataBand4 type="DataBand" Ref="13" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,1.2,20.2,2.2</ClientRectangle>
+              <Components count="7" isList="true">
+                <Text20 type="Text" Ref="14" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>7.6,0,5.4,1</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,20</Font>
+                  <Guid>7601533a23c2d98f6c4875328a622dee</Guid>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text20</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="13"/>
+                  <Text>โรงพยาบาลศรีสังวรสุโขทัย</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                </Text20>
+                <Text14 type="Text" Ref="15" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>1,1,1.6,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,16</Font>
+                  <Guid>0b0782822b31752e11ef752fe6a11f3a</Guid>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text14</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="13"/>
+                  <Text>ชื่อ-สกุล :</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text14>
+                <Text18 type="Text" Ref="16" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>1,1.6,2.2,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,16</Font>
+                  <Guid>1de641a164c4d5ea0a54752fe6a116f5</Guid>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text18</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="13"/>
+                  <Text>ประจำเดือน :</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text18>
+                <Text19 type="Text" Ref="17" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>10.2,1.6,9.6,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,16</Font>
+                  <Guid>bee7ecad1176fa334292752ffc39b053</Guid>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text19</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="13"/>
+                  <Text>หน่วยงาน :  {DataSource5.DEPTNAME}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text19>
+                <Text28 type="Text" Ref="18" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>15,1,1.2,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,16</Font>
+                  <Guid>0a0d761549b5a91213a1752ffc382b79</Guid>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text28</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="13"/>
+                  <Text>เลขที่ :</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text28>
+                <Text21 type="Text" Ref="19" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>2.8,1,5.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,16</Font>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text21</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="13"/>
+                  <Text>{DataSource5.hname}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>DataColumn</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text21>
+                <Text22 type="Text" Ref="20" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>3,1.6,5.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,16</Font>
+                  <Guid>f172b367124ee775908475573b54016a</Guid>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text22</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="13"/>
+                  <Text>{DataSource5.MONTH_NAME}  {gyear}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text22>
+              </Components>
+              <Conditions count="0" isList="true"/>
+              <DataSourceName>DataSource5</DataSourceName>
+              <Filters count="0" isList="true"/>
+              <Name>DataBand4</Name>
+              <Page isRef="8"/>
+              <Parent isRef="11"/>
+              <Sort count="0" isList="true"/>
+            </DataBand4>
+          </Components>
+          <Conditions count="0" isList="true"/>
+          <Name>Panel4</Name>
+          <Page isRef="8"/>
+          <Parent isRef="8"/>
+        </Panel4>
+        <Panel1 type="Panel" Ref="21" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0.4,3.6,9.6,7.8</ClientRectangle>
+          <Components count="5" isList="true">
+            <Panel2 type="Panel" Ref="22" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,5.6,9.6,2.2</ClientRectangle>
+              <Components count="2" isList="true">
+                <GroupHeaderBand2 type="GroupHeaderBand" Ref="23" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>0,0.4,9.6,0</ClientRectangle>
+                  <Components count="0" isList="true"/>
+                  <Condition>{DataSource3.cid}</Condition>
+                  <Conditions count="0" isList="true"/>
+                  <Name>GroupHeaderBand2</Name>
+                  <NewPageBefore>True</NewPageBefore>
+                  <Page isRef="8"/>
+                  <Parent isRef="22"/>
+                </GroupHeaderBand2>
+                <DataBand2 type="DataBand" Ref="24" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>0,1.2,9.6,0.8</ClientRectangle>
+                  <Components count="3" isList="true">
+                    <Text17 type="Text" Ref="25" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanBreak>True</CanBreak>
+                      <ClientRectangle>0.2,0,3.6,0.8</ClientRectangle>
+                      <Conditions count="0" isList="true"/>
+                      <Font>Angsana New,18,Bold</Font>
+                      <Guid>8f211737a5f19cf572a874d1aaac7741</Guid>
+                      <HorAlignment>Center</HorAlignment>
+                      <Margins>0,0,0,0</Margins>
+                      <Name>Text17</Name>
+                      <Page isRef="8"/>
+                      <Parent isRef="24"/>
+                      <Text>รวมรายรับ</Text>
+                      <TextBrush>Black</TextBrush>
+                      <Type>Expression</Type>
+                      <VertAlignment>Center</VertAlignment>
+                    </Text17>
+                    <Text27 type="Text" Ref="26" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanBreak>True</CanBreak>
+                      <ClientRectangle>7,0,2.4,0.8</ClientRectangle>
+                      <Conditions count="0" isList="true"/>
+                      <Font>Angsana New,18,Bold</Font>
+                      <Guid>1ff9c167454d1daf6b8d75203bd0210e</Guid>
+                      <HorAlignment>Center</HorAlignment>
+                      <Margins>0,0,0,0</Margins>
+                      <Name>Text27</Name>
+                      <Page isRef="8"/>
+                      <Parent isRef="24"/>
+                      <Text>บาท</Text>
+                      <TextBrush>Black</TextBrush>
+                      <Type>Expression</Type>
+                      <VertAlignment>Center</VertAlignment>
+                    </Text27>
+                    <Text26 type="Text" Ref="27" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanBreak>True</CanBreak>
+                      <ClientRectangle>3.6,0,3.2,0.8</ClientRectangle>
+                      <Conditions count="0" isList="true"/>
+                      <Font>Angsana New,18</Font>
+                      <Guid>ad966b1dcf69c37f6d8074d25483a9f9</Guid>
+                      <HorAlignment>Right</HorAlignment>
+                      <Margins>0,0,0,0</Margins>
+                      <Name>Text26</Name>
+                      <Page isRef="8"/>
+                      <Parent isRef="24"/>
+                      <Text>{DataSource3.summoney}</Text>
+                      <TextBrush>Black</TextBrush>
+                      <TextFormat type="NumberFormat" Ref="28" isKey="true">
+                        <GroupSeparator>,</GroupSeparator>
+                        <NegativePattern>1</NegativePattern>
+                        <UseLocalSetting>False</UseLocalSetting>
+                      </TextFormat>
+                      <Type>DataColumn</Type>
+                      <VertAlignment>Center</VertAlignment>
+                    </Text26>
+                  </Components>
+                  <Conditions count="0" isList="true"/>
+                  <DataSourceName>DataSource3</DataSourceName>
+                  <Filters count="0" isList="true"/>
+                  <Name>DataBand2</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="22"/>
+                  <Sort count="0" isList="true"/>
+                </DataBand2>
+              </Components>
+              <Conditions count="0" isList="true"/>
+              <Name>Panel2</Name>
+              <Page isRef="8"/>
+              <Parent isRef="21"/>
+            </Panel2>
+            <GroupHeaderBand1 type="GroupHeaderBand" Ref="29" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0.4,9.6,0</ClientRectangle>
+              <Components count="0" isList="true"/>
+              <Condition>{DataSource1.cid}</Condition>
+              <Conditions count="0" isList="true"/>
+              <Name>GroupHeaderBand1</Name>
+              <NewPageBefore>True</NewPageBefore>
+              <Page isRef="8"/>
+              <Parent isRef="21"/>
+            </GroupHeaderBand1>
+            <HeaderBand1 type="HeaderBand" Ref="30" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[255:255:255]</Brush>
+              <ClientRectangle>0,1.2,9.6,0.6</ClientRectangle>
+              <Components count="3" isList="true">
+                <Text10 type="Text" Ref="31" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>6.6,0,2.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>e97c77d942549da0b567727e871b48db</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text10</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="30"/>
+                  <Text>จำนวน/บาท</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text10>
+                <Text11 type="Text" Ref="32" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>1.2,0,4.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>7e5747ff21e5dd4d9b03727f16b48729</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text11</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="30"/>
+                  <Text>รายการ</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text11>
+                <Text12 type="Text" Ref="33" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>0.4,0,1,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>314048497743a59d3964727f5b1cdee4</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text12</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="30"/>
+                  <Text>ลำดับ</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text12>
+              </Components>
+              <Conditions count="0" isList="true"/>
+              <Name>HeaderBand1</Name>
+              <Page isRef="8"/>
+              <Parent isRef="21"/>
+            </HeaderBand1>
+            <DataBand1 type="DataBand" Ref="34" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,2.6,9.6,0.6</ClientRectangle>
+              <Components count="3" isList="true">
+                <Text1 type="Text" Ref="35" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>1.6,0,4.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text1</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="34"/>
+                  <Text>{DataSource1.name}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <VertAlignment>Center</VertAlignment>
+                </Text1>
+                <Text2 type="Text" Ref="36" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>0.4,0,1,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>AngsanaUPC,14</Font>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text2</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="34"/>
+                  <Text>{Line}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <VertAlignment>Center</VertAlignment>
+                </Text2>
+                <Text6 type="Text" Ref="37" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>6.2,0,3.2,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>3f3b1a5ca00b0520c02d726a951393e2</Guid>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text6</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="34"/>
+                  <Text>{DataSource1.money}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextFormat type="NumberFormat" Ref="38" isKey="true">
+                    <GroupSeparator>,</GroupSeparator>
+                    <NegativePattern>1</NegativePattern>
+                    <UseLocalSetting>False</UseLocalSetting>
+                  </TextFormat>
+                  <Type>DataColumn</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text6>
+              </Components>
+              <Conditions count="0" isList="true"/>
+              <DataSourceName>DataSource1</DataSourceName>
+              <Filters count="0" isList="true"/>
+              <Name>DataBand1</Name>
+              <Page isRef="8"/>
+              <Parent isRef="21"/>
+              <Sort count="0" isList="true"/>
+            </DataBand1>
+            <GroupFooterBand1 type="GroupFooterBand" Ref="39" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[255:255:255]</Brush>
+              <ClientRectangle>0,4,9.6,0.6</ClientRectangle>
+              <Components count="4" isList="true">
+                <Text25 type="Text" Ref="40" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>1.4,0,4.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>c929fe6f67874847c6cb74cdd7359d58</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text25</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="39"/>
+                  <Text>รวมรายรับ</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text25>
+                <Text9 type="Text" Ref="41" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>6.2,0,3.2,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>a7062ef794383699a28f74cdd73547ce</Guid>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text9</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="39"/>
+                  <Text>{Sum(DataBand1,DataSource1.money)}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextFormat type="NumberFormat" Ref="42" isKey="true">
+                    <GroupSeparator>,</GroupSeparator>
+                    <NegativePattern>1</NegativePattern>
+                    <UseLocalSetting>False</UseLocalSetting>
+                  </TextFormat>
+                  <Type>Totals</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text9>
+                <StartPointPrimitive1 type="Stimulsoft.Report.Components.StiStartPointPrimitive" Ref="43" isKey="true">
+                  <ClientRectangle>0,0,0,0</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Name>StartPointPrimitive1</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="39"/>
+                  <ReferenceToGuid>faabbcda13dd0db4780974d0f5222b22</ReferenceToGuid>
+                </StartPointPrimitive1>
+                <EndPointPrimitive1 type="Stimulsoft.Report.Components.StiEndPointPrimitive" Ref="44" isKey="true">
+                  <ClientRectangle>9.6,0.6,0,0</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Name>EndPointPrimitive1</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="39"/>
+                  <ReferenceToGuid>faabbcda13dd0db4780974d0f5222b22</ReferenceToGuid>
+                </EndPointPrimitive1>
+              </Components>
+              <Conditions count="0" isList="true"/>
+              <Name>GroupFooterBand1</Name>
+              <Page isRef="8"/>
+              <Parent isRef="21"/>
+            </GroupFooterBand1>
+          </Components>
+          <Conditions count="0" isList="true"/>
+          <Name>Panel1</Name>
+          <Page isRef="8"/>
+          <Parent isRef="8"/>
+        </Panel1>
+        <Panel3 type="Panel" Ref="45" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>10.6,3.6,9.6,7.8</ClientRectangle>
+          <Components count="4" isList="true">
+            <GroupHeaderBand3 type="GroupHeaderBand" Ref="46" isKey="true">
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0.4,9.6,0</ClientRectangle>
+              <Components count="0" isList="true"/>
+              <Condition>{DataSource2.cid}</Condition>
+              <Conditions count="0" isList="true"/>
+              <Guid>cfb4997ec3339ac2041674c97cd4abd6</Guid>
+              <Name>GroupHeaderBand3</Name>
+              <NewPageBefore>True</NewPageBefore>
+              <Page isRef="8"/>
+              <Parent isRef="45"/>
+            </GroupHeaderBand3>
+            <HeaderBand3 type="HeaderBand" Ref="47" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[255:255:255]</Brush>
+              <ClientRectangle>0,1.2,9.6,0.6</ClientRectangle>
+              <Components count="3" isList="true">
+                <Text15 type="Text" Ref="48" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>6.6,0,2.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>2eed62190ce8c23cd33872809c05a79d</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text15</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="47"/>
+                  <Text>จำนวน/บาท</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text15>
+                <Text8 type="Text" Ref="49" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>1.2,0,4.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>cab1ed0cc070731a1d8372809c053585</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text8</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="47"/>
+                  <Text>รายการ</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text8>
+                <Text13 type="Text" Ref="50" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>0.4,0,1,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>097c0eb517e86b67844572809c0596a2</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text13</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="47"/>
+                  <Text>ลำดับ</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text13>
+              </Components>
+              <Conditions count="0" isList="true"/>
+              <Guid>5f36f0de76eef66a9b6872809c0545ba</Guid>
+              <Name>HeaderBand3</Name>
+              <Page isRef="8"/>
+              <Parent isRef="45"/>
+            </HeaderBand3>
+            <DataBand3 type="DataBand" Ref="51" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,2.6,9.6,0.6</ClientRectangle>
+              <Components count="3" isList="true">
+                <Text7 type="Text" Ref="52" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>1.4,0,4.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>f4729e9e02b4ecbbd0c67277575ce497</Guid>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text7</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="51"/>
+                  <Text>{DataSource2.tname}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>DataColumn</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text7>
+                <Text3 type="Text" Ref="53" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>0.2,0,1,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>AngsanaUPC,14</Font>
+                  <Guid>12e4b4af85df12eb96097277575c403e</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text3</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="51"/>
+                  <Text>{Line}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <VertAlignment>Center</VertAlignment>
+                </Text3>
+                <Text4 type="Text" Ref="54" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <CanBreak>True</CanBreak>
+                  <ClientRectangle>6.4,0,3,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>cb74a9804ae1cf4cf8b47277575c384d</Guid>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text4</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="51"/>
+                  <Text>{DataSource2.tmoney}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextFormat type="NumberFormat" Ref="55" isKey="true">
+                    <GroupSeparator>,</GroupSeparator>
+                    <NegativePattern>1</NegativePattern>
+                    <UseLocalSetting>False</UseLocalSetting>
+                  </TextFormat>
+                  <Type>DataColumn</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text4>
+              </Components>
+              <Conditions count="0" isList="true"/>
+              <DataSourceName>DataSource2</DataSourceName>
+              <Filters count="0" isList="true"/>
+              <Guid>1db738a153a21bab16d6725f281425c7</Guid>
+              <Name>DataBand3</Name>
+              <Page isRef="8"/>
+              <Parent isRef="45"/>
+              <Sort count="0" isList="true"/>
+            </DataBand3>
+            <GroupFooterBand3 type="GroupFooterBand" Ref="56" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[255:255:255]</Brush>
+              <ClientRectangle>0,4,9.6,0.6</ClientRectangle>
+              <Components count="2" isList="true">
+                <Text24 type="Text" Ref="57" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>1.4,0,4.8,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>99758b612206255af2fe74d028bd5931</Guid>
+                  <HorAlignment>Center</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text24</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="56"/>
+                  <Text>รวมรายจ่าย</Text>
+                  <TextBrush>Black</TextBrush>
+                  <Type>Expression</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text24>
+                <Text5 type="Text" Ref="58" isKey="true">
+                  <Brush>Transparent</Brush>
+                  <ClientRectangle>6.4,0,3,0.6</ClientRectangle>
+                  <Conditions count="0" isList="true"/>
+                  <Font>Angsana New,14</Font>
+                  <Guid>b20aff4fa4f34e6c6f8474d05b34efcf</Guid>
+                  <HorAlignment>Right</HorAlignment>
+                  <Margins>0,0,0,0</Margins>
+                  <Name>Text5</Name>
+                  <Page isRef="8"/>
+                  <Parent isRef="56"/>
+                  <Text>{Sum(DataBand3,DataSource2.tmoney)}</Text>
+                  <TextBrush>Black</TextBrush>
+                  <TextFormat type="NumberFormat" Ref="59" isKey="true">
+                    <GroupSeparator>,</GroupSeparator>
+                    <NegativePattern>1</NegativePattern>
+                    <UseLocalSetting>False</UseLocalSetting>
+                  </TextFormat>
+                  <Type>Totals</Type>
+                  <VertAlignment>Center</VertAlignment>
+                </Text5>
+              </Components>
+              <Conditions count="0" isList="true"/>
+              <Guid>651f3b66464d6fd0b21b74d028bd280a</Guid>
+              <Name>GroupFooterBand3</Name>
+              <Page isRef="8"/>
+              <Parent isRef="45"/>
+            </GroupFooterBand3>
+          </Components>
+          <Conditions count="0" isList="true"/>
+          <Guid>ff5b203a2bf59a1f0dbc725f2813d66c</Guid>
+          <Name>Panel3</Name>
+          <Page isRef="8"/>
+          <Parent isRef="8"/>
+        </Panel3>
+        <RectanglePrimitive1 type="RectanglePrimitive" Ref="60" isKey="true">
+          <ClientRectangle>0.4,7.6,9.6,0.6</ClientRectangle>
+          <Color>Black</Color>
+          <Conditions count="0" isList="true"/>
+          <Guid>faabbcda13dd0db4780974d0f5222b22</Guid>
+          <Name>RectanglePrimitive1</Name>
+          <Page isRef="8"/>
+          <Parent isRef="8"/>
+        </RectanglePrimitive1>
+      </Components>
+      <Conditions count="0" isList="true"/>
+      <Guid>54694d0e7d548c361b4fb0089ccbf772</Guid>
+      <Margins>0.2,0.2,0.2,0.2</Margins>
+      <Name>Page1</Name>
+      <Orientation>Landscape</Orientation>
+      <PageHeight>14.81</PageHeight>
+      <PageWidth>21.01</PageWidth>
+      <PaperSize>A5</PaperSize>
+      <Report isRef="0"/>
+      <Watermark type="Stimulsoft.Report.Components.StiWatermark" Ref="61" isKey="true">
+        <Font>Arial,100</Font>
+        <TextBrush>[50:0:0:0]</TextBrush>
+      </Watermark>
+    </Page1>
+  </Pages>
+  <PrinterSettings type="Stimulsoft.Report.Print.StiPrinterSettings" Ref="62" isKey="true"/>
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>05/21/2015 02:47:10 PM</ReportChanged>
+  <ReportCreated>02/22/2015 01:45:29 PM</ReportCreated>
+  <ReportFile>C:\xampp\htdocs\swsolary\databases\report2.mrt</ReportFile>
+  <ReportGuid>c35a825d42507e60afbc7570b7d74756</ReportGuid>
+  <ReportName>Report</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2013.3.1800</ReportVersion>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles count="0" isList="true"/>
+</StiSerializer>

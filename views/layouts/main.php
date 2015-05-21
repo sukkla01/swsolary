@@ -79,20 +79,20 @@ foreach(Yii::$app->session->getAllFlashes() as $key=>$message){
         </div>
     </div>
 
-    <!--<footer class="footer container">
+    <footer class="footer container">
         <div class="container">
             <p class="pull-left">&copy; โรงพยาบาลศรีสังวรสุโขทัย <?= date('Y') ?></p>
             <p class="pull-right"><?= Yii::powered() ?></p>
         </div>
-    </footer>-->
+    </footer>
 
-    <div class="navbar-fixed-bottom">
+    <!--<div class="navbar-fixed-bottom">
         <div class="container">
-           <p class="pull-left">&copy; โรงพยาบาลศรีสังวรสุโขทัย <?= date('Y') ?></p>
+           <p class="pull-left"></p>
           
-            <p class="pull-right"><?= Yii::powered() ?></p>
+            <p class="pull-right"></p>
         </div>
-    </div>
+    </div>-->
     
 <?php $this->endBody() ?>
 </body>
