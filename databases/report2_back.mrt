@@ -12,23 +12,19 @@ BpyF6gV1L8J42ytLXNO8bFvQhM8=</ConnectionStringEncrypted>
     <DataSources isList="true" count="5">
       <DataSource1 type="Stimulsoft.Report.Dictionary.StiMySqlSource" isKey="true" Ref="3">
         <Alias>DataSource1</Alias>
-        <Columns isList="true" count="9">
-          <value>fyear,System.String</value>
-          <value>fmonth,System.String</value>
+        <Columns isList="true" count="3">
           <value>cid,System.String</value>
-          <value>typesalary,System.String</value>
-          <value>money,System.String</value>
-          <value>id,System.String</value>
           <value>name,System.String</value>
-          <value>tcheck,System.String</value>
-          <value>code,System.String</value>
+          <value>money,System.String</value>
         </Columns>
         <CommandTimeout>30</CommandTimeout>
         <Dictionary isRef="1"/>
         <Name>DataSource1</Name>
         <NameInSource>Connection1</NameInSource>
         <Parameters isList="true" count="0"/>
-        <SqlCommand>SELECT fyear,fmonth,cid,typesalary,CONCAT(SUBSTR(r.money,1,LENGTH(r.money)-2),'.',SUBSTR(r.money,-2,2)) AS money,t.id,t.name,'Yes' AS tcheck,code
+        <SqlCommand>SELECT r.cid,name,money
+FROM report_total r
+LEFT JOIN (SELECT fyear,fmonth,cid,typesalary,CONCAT(SUBSTR(r.money,1,LENGTH(r.money)-2),'.',SUBSTR(r.money,-2,2)) AS money,t.id,t.name,'Yes' AS tcheck,code
 FROM p_money_report r
 LEFT JOIN p_typemoney t ON t.code=r.typesalary
 WHERE fyear='{gyear}' AND fmonth='{gmonth}' AND status='1' and  typesalary NOT IN('money10','money21')
@@ -39,8 +35,9 @@ FROM p_money_report_sw rs
 LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
 WHERE YEAR(rs.salarydate)='{gyear}'-543 AND MONTH(rs.salarydate)='{gmonth}' 
 	AND status='1'
-HAVING tcheck='Yes'
-ORDER BY cid,id</SqlCommand>
+HAVING tcheck='Yes') sub ON sub.cid=r.cid
+WHERE r.fyear='{gyear}'-543 AND r.fmonth='{gmonth}'
+ORDER BY r.cid</SqlCommand>
       </DataSource1>
       <DataSource2 type="Stimulsoft.Report.Dictionary.StiMySqlSource" isKey="true" Ref="4">
         <Alias>DataSource2</Alias>
@@ -69,7 +66,7 @@ LEFT JOIN p_typemoney_sw ts ON ts.code=rs.typesalary
 WHERE YEAR(rs.salarydate)='{gyear}'-543  AND MONTH(rs.salarydate)='{gmonth}' 
 	AND status='2'
 HAVING tcheck='Yes') sub ON sub.cid=r.cid
-WHERE r.fyear='2015' AND r.fmonth='01'
+WHERE r.fyear='{gyear}'-543  AND r.fmonth='{gmonth}'
 ORDER BY r.cid</SqlCommand>
       </DataSource2>
       <DataSource3 type="Stimulsoft.Report.Dictionary.StiMySqlSource" isKey="true" Ref="5">
@@ -198,7 +195,7 @@ group by cid</SqlCommand>
         <PageFooterBand1 type="PageFooterBand" isKey="true" Ref="9">
           <Brush>Transparent</Brush>
           <ClientRectangle>0,12.01,20.61,2.4</ClientRectangle>
-          <Components isList="true" count="2">
+          <Components isList="true" count="1">
             <Text23 type="Text" isKey="true" Ref="10">
               <Brush>Transparent</Brush>
               <ClientRectangle>11,0.79,9.2,0.6</ClientRectangle>
@@ -215,30 +212,17 @@ group by cid</SqlCommand>
               <Type>Expression</Type>
               <VertAlignment>Center</VertAlignment>
             </Text23>
-            <Text16 type="Text" isKey="true" Ref="11">
-              <Brush>Transparent</Brush>
-              <ClientRectangle>1.8,0.79,2.8,1</ClientRectangle>
-              <Conditions isList="true" count="0"/>
-              <Font>Arial,10</Font>
-              <Margins>0,0,0,0</Margins>
-              <Name>Text16</Name>
-              <Page isRef="8"/>
-              <Parent isRef="9"/>
-              <Text>{DataSource1.cid}</Text>
-              <TextBrush>Black</TextBrush>
-              <Type>DataColumn</Type>
-            </Text16>
           </Components>
           <Conditions isList="true" count="0"/>
           <Name>PageFooterBand1</Name>
           <Page isRef="8"/>
           <Parent isRef="8"/>
         </PageFooterBand1>
-        <Panel4 type="Panel" isKey="true" Ref="12">
+        <Panel4 type="Panel" isKey="true" Ref="11">
           <Brush>Transparent</Brush>
           <ClientRectangle>0.2,0,20.2,3.4</ClientRectangle>
           <Components isList="true" count="2">
-            <GroupHeaderBand4 type="GroupHeaderBand" isKey="true" Ref="13">
+            <GroupHeaderBand4 type="GroupHeaderBand" isKey="true" Ref="12">
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0.4,20.2,0</ClientRectangle>
               <Components isList="true" count="0"/>
@@ -247,13 +231,13 @@ group by cid</SqlCommand>
               <Name>GroupHeaderBand4</Name>
               <NewPageBefore>True</NewPageBefore>
               <Page isRef="8"/>
-              <Parent isRef="12"/>
+              <Parent isRef="11"/>
             </GroupHeaderBand4>
-            <DataBand4 type="DataBand" isKey="true" Ref="14">
+            <DataBand4 type="DataBand" isKey="true" Ref="13">
               <Brush>Transparent</Brush>
               <ClientRectangle>0,1.2,20.2,2.2</ClientRectangle>
               <Components isList="true" count="8">
-                <Text20 type="Text" isKey="true" Ref="15">
+                <Text20 type="Text" isKey="true" Ref="14">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>7.6,0,5.4,1</ClientRectangle>
@@ -263,12 +247,12 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text20</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="14"/>
+                  <Parent isRef="13"/>
                   <Text>โรงพยาบาลศรีสังวรสุโขทัย</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                 </Text20>
-                <Text14 type="Text" isKey="true" Ref="16">
+                <Text14 type="Text" isKey="true" Ref="15">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>1,1,1.6,0.6</ClientRectangle>
@@ -278,13 +262,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text14</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="14"/>
+                  <Parent isRef="13"/>
                   <Text>ชื่อ-สกุล :</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text14>
-                <Text18 type="Text" isKey="true" Ref="17">
+                <Text18 type="Text" isKey="true" Ref="16">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>1,1.6,2.2,0.6</ClientRectangle>
@@ -294,13 +278,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text18</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="14"/>
+                  <Parent isRef="13"/>
                   <Text>ประจำเดือน :</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text18>
-                <Text19 type="Text" isKey="true" Ref="18">
+                <Text19 type="Text" isKey="true" Ref="17">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>10.2,1.6,9.6,0.6</ClientRectangle>
@@ -311,13 +295,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text19</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="14"/>
+                  <Parent isRef="13"/>
                   <Text>หน่วยงาน :  {DataSource3.DEPTNAME}</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text19>
-                <Text28 type="Text" isKey="true" Ref="19">
+                <Text28 type="Text" isKey="true" Ref="18">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>15,1,1.2,0.6</ClientRectangle>
@@ -327,13 +311,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text28</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="14"/>
+                  <Parent isRef="13"/>
                   <Text>เลขที่ :</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text28>
-                <Text21 type="Text" isKey="true" Ref="20">
+                <Text21 type="Text" isKey="true" Ref="19">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>2.8,1,5.8,0.6</ClientRectangle>
@@ -342,13 +326,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text21</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="14"/>
+                  <Parent isRef="13"/>
                   <Text>{DataSource3.tname}</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>DataColumn</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text21>
-                <Text22 type="Text" isKey="true" Ref="21">
+                <Text22 type="Text" isKey="true" Ref="20">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>3,1.6,5.8,0.6</ClientRectangle>
@@ -358,13 +342,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text22</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="14"/>
+                  <Parent isRef="13"/>
                   <Text>{DataSource3.MONTH_NAME}  {gyear}</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text22>
-                <Text29 type="Text" isKey="true" Ref="22">
+                <Text29 type="Text" isKey="true" Ref="21">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>16,1,3.4,0.6</ClientRectangle>
@@ -374,7 +358,7 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text29</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="14"/>
+                  <Parent isRef="13"/>
                   <Text>{DataSource3.no}</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>DataColumn</Type>
@@ -386,7 +370,7 @@ group by cid</SqlCommand>
               <Filters isList="true" count="0"/>
               <Name>DataBand4</Name>
               <Page isRef="8"/>
-              <Parent isRef="12"/>
+              <Parent isRef="11"/>
               <Sort isList="true" count="0"/>
             </DataBand4>
           </Components>
@@ -395,15 +379,15 @@ group by cid</SqlCommand>
           <Page isRef="8"/>
           <Parent isRef="8"/>
         </Panel4>
-        <Panel1 type="Panel" isKey="true" Ref="23">
+        <Panel1 type="Panel" isKey="true" Ref="22">
           <Brush>Transparent</Brush>
           <ClientRectangle>0.4,3.6,9.6,7.8</ClientRectangle>
           <Components isList="true" count="5">
-            <Panel2 type="Panel" isKey="true" Ref="24">
+            <Panel2 type="Panel" isKey="true" Ref="23">
               <Brush>Transparent</Brush>
               <ClientRectangle>0,5.6,9.6,2.2</ClientRectangle>
               <Components isList="true" count="2">
-                <GroupHeaderBand2 type="GroupHeaderBand" isKey="true" Ref="25">
+                <GroupHeaderBand2 type="GroupHeaderBand" isKey="true" Ref="24">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>0,0.4,9.6,0</ClientRectangle>
                   <Components isList="true" count="0"/>
@@ -412,13 +396,13 @@ group by cid</SqlCommand>
                   <Name>GroupHeaderBand2</Name>
                   <NewPageBefore>True</NewPageBefore>
                   <Page isRef="8"/>
-                  <Parent isRef="24"/>
+                  <Parent isRef="23"/>
                 </GroupHeaderBand2>
-                <DataBand2 type="DataBand" isKey="true" Ref="26">
+                <DataBand2 type="DataBand" isKey="true" Ref="25">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>0,1.2,9.6,0.8</ClientRectangle>
                   <Components isList="true" count="3">
-                    <Text17 type="Text" isKey="true" Ref="27">
+                    <Text17 type="Text" isKey="true" Ref="26">
                       <Brush>Transparent</Brush>
                       <CanBreak>True</CanBreak>
                       <ClientRectangle>0.2,0,3.6,0.8</ClientRectangle>
@@ -429,13 +413,13 @@ group by cid</SqlCommand>
                       <Margins>0,0,0,0</Margins>
                       <Name>Text17</Name>
                       <Page isRef="8"/>
-                      <Parent isRef="26"/>
+                      <Parent isRef="25"/>
                       <Text>รวมรายรับ</Text>
                       <TextBrush>Black</TextBrush>
                       <Type>Expression</Type>
                       <VertAlignment>Center</VertAlignment>
                     </Text17>
-                    <Text27 type="Text" isKey="true" Ref="28">
+                    <Text27 type="Text" isKey="true" Ref="27">
                       <Brush>Transparent</Brush>
                       <CanBreak>True</CanBreak>
                       <ClientRectangle>7,0,2.4,0.8</ClientRectangle>
@@ -446,13 +430,13 @@ group by cid</SqlCommand>
                       <Margins>0,0,0,0</Margins>
                       <Name>Text27</Name>
                       <Page isRef="8"/>
-                      <Parent isRef="26"/>
+                      <Parent isRef="25"/>
                       <Text>บาท</Text>
                       <TextBrush>Black</TextBrush>
                       <Type>Expression</Type>
                       <VertAlignment>Center</VertAlignment>
                     </Text27>
-                    <Text26 type="Text" isKey="true" Ref="29">
+                    <Text26 type="Text" isKey="true" Ref="28">
                       <Brush>Transparent</Brush>
                       <CanBreak>True</CanBreak>
                       <ClientRectangle>3.6,0,3.2,0.8</ClientRectangle>
@@ -463,10 +447,10 @@ group by cid</SqlCommand>
                       <Margins>0,0,0,0</Margins>
                       <Name>Text26</Name>
                       <Page isRef="8"/>
-                      <Parent isRef="26"/>
+                      <Parent isRef="25"/>
                       <Text>{DataSource3.summoney}</Text>
                       <TextBrush>Black</TextBrush>
-                      <TextFormat type="NumberFormat" isKey="true" Ref="30">
+                      <TextFormat type="NumberFormat" isKey="true" Ref="29">
                         <GroupSeparator>,</GroupSeparator>
                         <NegativePattern>1</NegativePattern>
                         <UseLocalSetting>False</UseLocalSetting>
@@ -480,16 +464,16 @@ group by cid</SqlCommand>
                   <Filters isList="true" count="0"/>
                   <Name>DataBand2</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="24"/>
+                  <Parent isRef="23"/>
                   <Sort isList="true" count="0"/>
                 </DataBand2>
               </Components>
               <Conditions isList="true" count="0"/>
               <Name>Panel2</Name>
               <Page isRef="8"/>
-              <Parent isRef="23"/>
+              <Parent isRef="22"/>
             </Panel2>
-            <GroupHeaderBand1 type="GroupHeaderBand" isKey="true" Ref="31">
+            <GroupHeaderBand1 type="GroupHeaderBand" isKey="true" Ref="30">
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0.4,9.6,0</ClientRectangle>
               <Components isList="true" count="0"/>
@@ -498,14 +482,14 @@ group by cid</SqlCommand>
               <Name>GroupHeaderBand1</Name>
               <NewPageBefore>True</NewPageBefore>
               <Page isRef="8"/>
-              <Parent isRef="23"/>
+              <Parent isRef="22"/>
             </GroupHeaderBand1>
-            <HeaderBand1 type="HeaderBand" isKey="true" Ref="32">
+            <HeaderBand1 type="HeaderBand" isKey="true" Ref="31">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>[255:255:255]</Brush>
               <ClientRectangle>0,1.2,9.6,0.6</ClientRectangle>
               <Components isList="true" count="3">
-                <Text10 type="Text" isKey="true" Ref="33">
+                <Text10 type="Text" isKey="true" Ref="32">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>6.6,0,2.8,0.6</ClientRectangle>
                   <Conditions isList="true" count="0"/>
@@ -515,13 +499,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text10</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="32"/>
+                  <Parent isRef="31"/>
                   <Text>จำนวน/บาท</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text10>
-                <Text11 type="Text" isKey="true" Ref="34">
+                <Text11 type="Text" isKey="true" Ref="33">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>1.2,0,4.8,0.6</ClientRectangle>
                   <Conditions isList="true" count="0"/>
@@ -531,13 +515,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text11</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="32"/>
+                  <Parent isRef="31"/>
                   <Text>รายการ</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text11>
-                <Text12 type="Text" isKey="true" Ref="35">
+                <Text12 type="Text" isKey="true" Ref="34">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>0.4,0,1,0.6</ClientRectangle>
                   <Conditions isList="true" count="0"/>
@@ -547,7 +531,7 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text12</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="32"/>
+                  <Parent isRef="31"/>
                   <Text>ลำดับ</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
@@ -557,14 +541,14 @@ group by cid</SqlCommand>
               <Conditions isList="true" count="0"/>
               <Name>HeaderBand1</Name>
               <Page isRef="8"/>
-              <Parent isRef="23"/>
+              <Parent isRef="22"/>
             </HeaderBand1>
-            <DataBand1 type="DataBand" isKey="true" Ref="36">
+            <DataBand1 type="DataBand" isKey="true" Ref="35">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
               <ClientRectangle>0,2.6,9.6,0.6</ClientRectangle>
               <Components isList="true" count="3">
-                <Text1 type="Text" isKey="true" Ref="37">
+                <Text1 type="Text" isKey="true" Ref="36">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>1.6,0,4.8,0.6</ClientRectangle>
@@ -573,12 +557,12 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text1</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="36"/>
+                  <Parent isRef="35"/>
                   <Text>{DataSource1.name}</Text>
                   <TextBrush>Black</TextBrush>
                   <VertAlignment>Center</VertAlignment>
                 </Text1>
-                <Text2 type="Text" isKey="true" Ref="38">
+                <Text2 type="Text" isKey="true" Ref="37">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>0.4,0,1,0.6</ClientRectangle>
@@ -588,12 +572,12 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text2</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="36"/>
+                  <Parent isRef="35"/>
                   <Text>{Line}</Text>
                   <TextBrush>Black</TextBrush>
                   <VertAlignment>Center</VertAlignment>
                 </Text2>
-                <Text6 type="Text" isKey="true" Ref="39">
+                <Text6 type="Text" isKey="true" Ref="38">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>6.2,0,3.2,0.6</ClientRectangle>
@@ -604,10 +588,10 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text6</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="36"/>
+                  <Parent isRef="35"/>
                   <Text>{DataSource1.money}</Text>
                   <TextBrush>Black</TextBrush>
-                  <TextFormat type="NumberFormat" isKey="true" Ref="40">
+                  <TextFormat type="NumberFormat" isKey="true" Ref="39">
                     <GroupSeparator>,</GroupSeparator>
                     <NegativePattern>1</NegativePattern>
                     <UseLocalSetting>False</UseLocalSetting>
@@ -621,15 +605,15 @@ group by cid</SqlCommand>
               <Filters isList="true" count="0"/>
               <Name>DataBand1</Name>
               <Page isRef="8"/>
-              <Parent isRef="23"/>
+              <Parent isRef="22"/>
               <Sort isList="true" count="0"/>
             </DataBand1>
-            <GroupFooterBand1 type="GroupFooterBand" isKey="true" Ref="41">
+            <GroupFooterBand1 type="GroupFooterBand" isKey="true" Ref="40">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>[255:255:255]</Brush>
               <ClientRectangle>0,4,9.6,0.6</ClientRectangle>
               <Components isList="true" count="4">
-                <Text25 type="Text" isKey="true" Ref="42">
+                <Text25 type="Text" isKey="true" Ref="41">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>1.4,0,4.8,0.6</ClientRectangle>
                   <Conditions isList="true" count="0"/>
@@ -639,13 +623,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text25</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="41"/>
+                  <Parent isRef="40"/>
                   <Text>รวมรายรับ</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text25>
-                <Text9 type="Text" isKey="true" Ref="43">
+                <Text9 type="Text" isKey="true" Ref="42">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>6.2,0,3.2,0.6</ClientRectangle>
                   <Conditions isList="true" count="0"/>
@@ -655,10 +639,10 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text9</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="41"/>
+                  <Parent isRef="40"/>
                   <Text>{Sum(DataBand1,DataSource1.money)}</Text>
                   <TextBrush>Black</TextBrush>
-                  <TextFormat type="NumberFormat" isKey="true" Ref="44">
+                  <TextFormat type="NumberFormat" isKey="true" Ref="43">
                     <GroupSeparator>,</GroupSeparator>
                     <NegativePattern>1</NegativePattern>
                     <UseLocalSetting>False</UseLocalSetting>
@@ -666,27 +650,27 @@ group by cid</SqlCommand>
                   <Type>Totals</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text9>
-                <StartPointPrimitive1 type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true" Ref="45">
+                <StartPointPrimitive1 type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true" Ref="44">
                   <ClientRectangle>0,0,0,0</ClientRectangle>
                   <Conditions isList="true" count="0"/>
                   <Name>StartPointPrimitive1</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="41"/>
+                  <Parent isRef="40"/>
                   <ReferenceToGuid>faabbcda13dd0db4780974d0f5222b22</ReferenceToGuid>
                 </StartPointPrimitive1>
-                <EndPointPrimitive1 type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true" Ref="46">
+                <EndPointPrimitive1 type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true" Ref="45">
                   <ClientRectangle>9.6,0.6,0,0</ClientRectangle>
                   <Conditions isList="true" count="0"/>
                   <Name>EndPointPrimitive1</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="41"/>
+                  <Parent isRef="40"/>
                   <ReferenceToGuid>faabbcda13dd0db4780974d0f5222b22</ReferenceToGuid>
                 </EndPointPrimitive1>
               </Components>
               <Conditions isList="true" count="0"/>
               <Name>GroupFooterBand1</Name>
               <Page isRef="8"/>
-              <Parent isRef="23"/>
+              <Parent isRef="22"/>
             </GroupFooterBand1>
           </Components>
           <Conditions isList="true" count="0"/>
@@ -694,11 +678,11 @@ group by cid</SqlCommand>
           <Page isRef="8"/>
           <Parent isRef="8"/>
         </Panel1>
-        <Panel3 type="Panel" isKey="true" Ref="47">
+        <Panel3 type="Panel" isKey="true" Ref="46">
           <Brush>Transparent</Brush>
           <ClientRectangle>10.4,3.6,9.6,7.8</ClientRectangle>
           <Components isList="true" count="4">
-            <GroupHeaderBand3 type="GroupHeaderBand" isKey="true" Ref="48">
+            <GroupHeaderBand3 type="GroupHeaderBand" isKey="true" Ref="47">
               <Brush>Transparent</Brush>
               <ClientRectangle>0,0.4,9.6,0</ClientRectangle>
               <Components isList="true" count="0"/>
@@ -708,14 +692,14 @@ group by cid</SqlCommand>
               <Name>GroupHeaderBand3</Name>
               <NewPageBefore>True</NewPageBefore>
               <Page isRef="8"/>
-              <Parent isRef="47"/>
+              <Parent isRef="46"/>
             </GroupHeaderBand3>
-            <HeaderBand3 type="HeaderBand" isKey="true" Ref="49">
+            <HeaderBand3 type="HeaderBand" isKey="true" Ref="48">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>[255:255:255]</Brush>
               <ClientRectangle>0,1.2,9.6,0.6</ClientRectangle>
               <Components isList="true" count="3">
-                <Text15 type="Text" isKey="true" Ref="50">
+                <Text15 type="Text" isKey="true" Ref="49">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>6.6,0,2.8,0.6</ClientRectangle>
                   <Conditions isList="true" count="0"/>
@@ -725,13 +709,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text15</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="49"/>
+                  <Parent isRef="48"/>
                   <Text>จำนวน/บาท</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text15>
-                <Text8 type="Text" isKey="true" Ref="51">
+                <Text8 type="Text" isKey="true" Ref="50">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>1.2,0,4.8,0.6</ClientRectangle>
                   <Conditions isList="true" count="0"/>
@@ -741,13 +725,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text8</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="49"/>
+                  <Parent isRef="48"/>
                   <Text>รายการ</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text8>
-                <Text13 type="Text" isKey="true" Ref="52">
+                <Text13 type="Text" isKey="true" Ref="51">
                   <Brush>Transparent</Brush>
                   <ClientRectangle>0.4,0,1,0.6</ClientRectangle>
                   <Conditions isList="true" count="0"/>
@@ -757,7 +741,7 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text13</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="49"/>
+                  <Parent isRef="48"/>
                   <Text>ลำดับ</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
@@ -768,14 +752,14 @@ group by cid</SqlCommand>
               <Guid>5f36f0de76eef66a9b6872809c0545ba</Guid>
               <Name>HeaderBand3</Name>
               <Page isRef="8"/>
-              <Parent isRef="47"/>
+              <Parent isRef="46"/>
             </HeaderBand3>
-            <DataBand3 type="DataBand" isKey="true" Ref="53">
+            <DataBand3 type="DataBand" isKey="true" Ref="52">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>Transparent</Brush>
               <ClientRectangle>0,2.6,9.6,0.6</ClientRectangle>
               <Components isList="true" count="3">
-                <Text7 type="Text" isKey="true" Ref="54">
+                <Text7 type="Text" isKey="true" Ref="53">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>1.4,0,4.8,0.6</ClientRectangle>
@@ -785,13 +769,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text7</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="53"/>
+                  <Parent isRef="52"/>
                   <Text>{DataSource2.tname}</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>DataColumn</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text7>
-                <Text3 type="Text" isKey="true" Ref="55">
+                <Text3 type="Text" isKey="true" Ref="54">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>0.2,0,1,0.6</ClientRectangle>
@@ -802,12 +786,12 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text3</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="53"/>
+                  <Parent isRef="52"/>
                   <Text>{Line}</Text>
                   <TextBrush>Black</TextBrush>
                   <VertAlignment>Center</VertAlignment>
                 </Text3>
-                <Text4 type="Text" isKey="true" Ref="56">
+                <Text4 type="Text" isKey="true" Ref="55">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>6.4,0,3,0.6</ClientRectangle>
@@ -818,10 +802,10 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text4</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="53"/>
+                  <Parent isRef="52"/>
                   <Text>{DataSource2.tmoney}</Text>
                   <TextBrush>Black</TextBrush>
-                  <TextFormat type="NumberFormat" isKey="true" Ref="57">
+                  <TextFormat type="NumberFormat" isKey="true" Ref="56">
                     <GroupSeparator>,</GroupSeparator>
                     <NegativePattern>1</NegativePattern>
                     <UseLocalSetting>False</UseLocalSetting>
@@ -836,15 +820,15 @@ group by cid</SqlCommand>
               <Guid>1db738a153a21bab16d6725f281425c7</Guid>
               <Name>DataBand3</Name>
               <Page isRef="8"/>
-              <Parent isRef="47"/>
+              <Parent isRef="46"/>
               <Sort isList="true" count="0"/>
             </DataBand3>
-            <GroupFooterBand3 type="GroupFooterBand" isKey="true" Ref="58">
+            <GroupFooterBand3 type="GroupFooterBand" isKey="true" Ref="57">
               <Border>All;Black;1;Solid;False;4;Black</Border>
               <Brush>[255:255:255]</Brush>
               <ClientRectangle>0,4,9.6,0.6</ClientRectangle>
               <Components isList="true" count="2">
-                <Text24 type="Text" isKey="true" Ref="59">
+                <Text24 type="Text" isKey="true" Ref="58">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>1.4,0,4.8,0.6</ClientRectangle>
@@ -855,13 +839,13 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text24</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="58"/>
+                  <Parent isRef="57"/>
                   <Text>รวมรายจ่าย</Text>
                   <TextBrush>Black</TextBrush>
                   <Type>Expression</Type>
                   <VertAlignment>Center</VertAlignment>
                 </Text24>
-                <Text5 type="Text" isKey="true" Ref="60">
+                <Text5 type="Text" isKey="true" Ref="59">
                   <Brush>Transparent</Brush>
                   <CanBreak>True</CanBreak>
                   <ClientRectangle>6.4,0,3,0.6</ClientRectangle>
@@ -872,10 +856,10 @@ group by cid</SqlCommand>
                   <Margins>0,0,0,0</Margins>
                   <Name>Text5</Name>
                   <Page isRef="8"/>
-                  <Parent isRef="58"/>
+                  <Parent isRef="57"/>
                   <Text>{Sum(DataBand3,DataSource2.tmoney)}</Text>
                   <TextBrush>Black</TextBrush>
-                  <TextFormat type="NumberFormat" isKey="true" Ref="61">
+                  <TextFormat type="NumberFormat" isKey="true" Ref="60">
                     <GroupSeparator>,</GroupSeparator>
                     <NegativePattern>1</NegativePattern>
                     <UseLocalSetting>False</UseLocalSetting>
@@ -888,7 +872,7 @@ group by cid</SqlCommand>
               <Guid>651f3b66464d6fd0b21b74d028bd280a</Guid>
               <Name>GroupFooterBand3</Name>
               <Page isRef="8"/>
-              <Parent isRef="47"/>
+              <Parent isRef="46"/>
             </GroupFooterBand3>
           </Components>
           <Conditions isList="true" count="0"/>
@@ -897,7 +881,7 @@ group by cid</SqlCommand>
           <Page isRef="8"/>
           <Parent isRef="8"/>
         </Panel3>
-        <RectanglePrimitive1 type="RectanglePrimitive" isKey="true" Ref="62">
+        <RectanglePrimitive1 type="RectanglePrimitive" isKey="true" Ref="61">
           <ClientRectangle>0.4,7.6,9.6,0.6</ClientRectangle>
           <Color>Black</Color>
           <Conditions isList="true" count="0"/>
@@ -916,18 +900,18 @@ group by cid</SqlCommand>
       <PageWidth>21.01</PageWidth>
       <PaperSize>A5</PaperSize>
       <Report isRef="0"/>
-      <Watermark type="Stimulsoft.Report.Components.StiWatermark" isKey="true" Ref="63">
+      <Watermark type="Stimulsoft.Report.Components.StiWatermark" isKey="true" Ref="62">
         <Font>Arial,100</Font>
         <TextBrush>[50:0:0:0]</TextBrush>
       </Watermark>
     </Page1>
   </Pages>
-  <PrinterSettings type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" Ref="64"/>
+  <PrinterSettings type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" Ref="63"/>
   <ReportAlias>Report</ReportAlias>
-  <ReportChanged>05/22/2015 04:06:15 PM</ReportChanged>
+  <ReportChanged>05/22/2015 04:32:00 PM</ReportChanged>
   <ReportCreated>02/22/2015 01:45:29 PM</ReportCreated>
-  <ReportFile>C:\xampp\htdocs\swsolary\databases\report2.mrt</ReportFile>
-  <ReportGuid>1bc1986ac0c9be70732b7adf79ef87d3</ReportGuid>
+  <ReportFile>C:\xampp\htdocs\swsolary\databases\report2_back.mrt</ReportFile>
+  <ReportGuid>1fca56752ab277cbc39d7af70d86a6a7</ReportGuid>
   <ReportName>Report</ReportName>
   <ReportUnit>Centimeters</ReportUnit>
   <ReportVersion>2013.3.1800</ReportVersion>
